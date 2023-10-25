@@ -1,15 +1,11 @@
 <template>
-  <v-container>
+  <v-container class="bg">
     <h2 class="mb-4">Vote for Your Favorite Option</h2>
 
     <v-radio-group v-model="selectedCandidate">
       <v-radio :label="option.name" :value="options[index]" :key="index" v-for="(option, index) in options"></v-radio>
     </v-radio-group>
-
     <v-btn @click="vote">Vote</v-btn>
-
-    <v-divider class="my-4"></v-divider>
-
   </v-container>
 </template>
 
@@ -21,6 +17,7 @@ import LandRegistrationContract from '../../blockchain/build/contracts/VotingSys
 export default {
   data() {
     return {
+      textareaValue: "",
       location: '',
       area: 0,
       privateKey: '0xdd63a9c53869849a6e14cad7330600f63d700617615e9db65c7a914b6f68f362', // Add a data property for the private key
@@ -28,9 +25,9 @@ export default {
       contract: null,
       account: '',
       options: [
-        {id:1, name: 'john', votes: 0 },
-        {id:2, name: 'michael', votes: 0 },
-        {id:3, name: 'jason', votes: 0 },
+        { id: 1, name: 'john', votes: 0 },
+        { id: 2, name: 'michael', votes: 0 },
+        { id: 3, name: 'jason', votes: 0 },
       ],
       selectedCandidate: null,
     };
@@ -46,14 +43,18 @@ export default {
         // Use the provided private key for transaction signing
         const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
         console.log(this.selectedCandidate)
-
+        this.textareaValue = account
+        // this.textareaValue = account
         await this.contract.methods.castVote(0, this.selectedCandidate.id, this.selectedCandidate.name, 1, 'john').send({
           from: account.address,
           gas: 2000000, // Adjust the gas limit according to your contract's needs
+        }).then((response)=>{
+          this.textareaValue = response
         });
 
 
       } catch (error) {
+        this.textareaValue = error
         console.error('Error registering land:', error.message);
         // Handle or display the error in your application
       }
@@ -61,7 +62,8 @@ export default {
     async main() {
       try {
         // Initialize Web3 with the injected provider (MetaMask) or fallback to a local provider
-        this.web3 = new Web3(Web3.givenProvider || 'http://192.168.1.4:7545');
+        // this.web3 = new Web3(Web3.givenProvider || 'http://192.168.1.4:7545');
+        this.web3 = new Web3('http://192.168.1.4:7545');
 
         // Create a contract instance
         this.contract = new this.web3.eth.Contract(LandRegistrationContract.abi, LandRegistrationContract.networks['5777'].address);
@@ -88,10 +90,12 @@ export default {
   },
   mounted() {
     this.main();
+    this.textareaValue = 'console'
   },
 };
 </script>
 
 <style scoped>
 /* Add your styles here if needed */
+
 </style>
