@@ -1,23 +1,28 @@
 <template>
-    <ion-content>
-        <ion-list>
-            <ion-list-header>
-                <ion-label class="ion-text-center">Vote for Your Favorite Option</ion-label>
-            </ion-list-header>
-
-            <ion-radio-group v-model="selectedCandidate" @input="onSelectedCandidateChange">
-                <ion-item v-for="(option, index) in options" :key="index">
-                    <ion-label>{{ option.name }}</ion-label>
-                    <ion-radio :value="index"></ion-radio>
-                </ion-item>
-            </ion-radio-group>
-
-            <ion-button expand="full" @click="vote">Vote</ion-button>
-        </ion-list>
-    </ion-content>
-</template>
+    <v-container class="bg mt-2">
+      <v-row fluid justify="center">
+        <v-col cols="12">
+          <h2 class="mb-4 text-center">Vote for Your Favorite Option</h2>
+        </v-col>
   
-
+        <v-col cols="12" class="text-center">
+          <v-radio-group v-model="selectedCandidate">
+            <v-radio
+              class="primary--text" 
+              :label="option.name"
+              :value="options[index]"
+              :key="index"
+              v-for="(option, index) in options"
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+  
+        <v-col cols="12" class="text-center mt-4"> <!-- Increased margin-top for better spacing -->
+          <v-btn @click="vote" class="primary">Vote</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+  </template>
   
 <script>
 import Web3 from 'web3';
@@ -40,17 +45,7 @@ export default {
             selectedCandidate: null,
         };
     },
-    watch: {
-        selectedCandidate: function (newVal, oldVal) {
-            console.log('selectedCandidate changed:', newVal);
-        }
-    },
-
     methods: {
-        onSelectedCandidateChange() {
-            console.log('onSelectedCandidateChange triggered');
-            console.log(this.selectedCandidate);
-        },
         async vote() {
             try {
                 // Validate private key format
@@ -61,12 +56,14 @@ export default {
                 // Use the provided private key for transaction signing
                 const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
                 console.log(this.selectedCandidate)
-                // await this.contract.methods.castVote(0, this.selectedCandidate.id, this.selectedCandidate.name, 1, 'john').send({
-                //     from: account.address,
-                //     gas: 2000000, // Adjust the gas limit according to your contract's needs
-                // }).then((response) => {
-                //     this.textareaValue = response
-                // });
+                this.textareaValue = account
+                // this.textareaValue = account
+                await this.contract.methods.castVote(0, this.selectedCandidate.id, this.selectedCandidate.name, 1, 'john').send({
+                    from: account.address,
+                    gas: 2000000, // Adjust the gas limit according to your contract's needs
+                }).then((response) => {
+                    this.textareaValue = response
+                });
 
 
             } catch (error) {
@@ -112,5 +109,12 @@ export default {
 </script>
   
 <style scoped>
-/* Add your styles here if needed */
+  .bg {
+    background-color: #f5f5f5; /* Set a light background color */
+    border-radius: 8px; /* Add rounded corners */
+  }
+
+  .primary--text {
+    color: #1976d2; /* Set a custom text color for the radio label */
+  }
 </style>
