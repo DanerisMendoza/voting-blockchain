@@ -5,9 +5,9 @@
         <router-view />
       </v-container>
     </v-main>
-    
-    <v-footer app dark>
-      <v-tabs v-model="activeTab" color="primary" class="centered-tabs" >
+
+    <v-footer app dark class="fixed-footer">
+      <v-tabs v-model="activeTab" color="primary" class="centered-tabs">
         <v-tab v-for="(item, index) in tabs" :key="index" :to="item.route" style="color: white;">
           {{ item.label }}
         </v-tab>
@@ -37,4 +37,14 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.fixed-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+body {
+  overflow-x: hidden;
+}
+
 </style>

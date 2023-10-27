@@ -2,21 +2,16 @@
   <v-app>
     <v-item-group active-class="primary">
       <v-autocomplete v-model="selected_position" :items="positions" item-text="name" item-value="id" auto-select-first
-        chips deletable-chips label="POSISTION"></v-autocomplete>
-      <v-row v-for="(item, index) in options" :key="item.id" cols="12" md="4">
-        <v-col cols="6">
-          <v-item v-slot="{ active, toggle }">
-            <v-card class="d-flex align-center" height="200" @click="toggle">
-              <v-card-title>{{ item.name }}</v-card-title>
-              <div v-if="active" class="text-h5 flex-grow-1 text-center">
-              </div>
-            </v-card>
-          </v-item>
-        </v-col>
-        <v-col cols="6" v-if="index ===0">
-          <v-btn>
-            VOTE
-          </v-btn>
+        chips label="POSISTION"></v-autocomplete>
+      <v-row>
+        <v-col cols="12">
+          <candidates />
+          <br>
+          <center>
+            <v-btn>
+              NEXT
+            </v-btn>
+          </center>
         </v-col>
       </v-row>
     </v-item-group>
@@ -27,10 +22,24 @@
 <script>
 import Web3 from 'web3';
 import LandRegistrationContract from '../../../../blockchain/build/contracts/VotingSystem.json';
+import candidates from '@/views/component/candidates.vue';
+import voteList from '@/views/component/voteList.vue';
+import { mapGetters } from 'vuex';
+
 export default {
+  components: { candidates, voteList },
+  computed: {
+    ...mapGetters(["SELECTED_POSITION"]),
+  },
+  watch: {
+    selected_position: {
+      handler(val) {
+        this.store.commit('SELECTED_POSITION',val)
+      }
+    },
+  },
   data() {
     return {
-      col2Created: false,
       textareaValue: "",
       location: '',
       area: 0,
@@ -39,20 +48,20 @@ export default {
       contract: null,
       account: '',
       options: [
-        { id: 1, name: 'john', votes: 0 },
-        { id: 2, name: 'michael', votes: 0 },
-        { id: 3, name: 'jason', votes: 0 },
-        { id: 4, name: 'angelo', votes: 0 },
-        { id: 5, name: 'aron', votes: 0 },
-        { id: 6, name: 'shiba', votes: 0 },
-        { id: 7, name: 'vince', votes: 0 },
-        { id: 8, name: 'cath', votes: 0 },
-        { id: 9, name: 'andres', votes: 0 },
-        { id: 10, name: 'billy', votes: 0 },
-        { id: 11, name: 'reid', votes: 0 },
+        { id: 1, name: 'john', votes: 0, position: 'President' },
+        { id: 2, name: 'michael', votes: 0, position: 'Vice President' },
+        { id: 3, name: 'jason', votes: 0, position: 'Secretary' },
+        { id: 4, name: 'angelo', votes: 0, position: 'Treasurer' },
+        { id: 5, name: 'aron', votes: 0, position: 'President' },
+        { id: 6, name: 'shiba', votes: 0, position: 'President' },
+        { id: 7, name: 'vince', votes: 0, position: 'Vice President' },
+        { id: 8, name: 'cath', votes: 0, position: 'Vice President' },
+        { id: 9, name: 'andres', votes: 0, position: 'Secretary' },
+        { id: 10, name: 'billy', votes: 0, position: 'Secretary' },
+        { id: 11, name: 'reid', votes: 0, position: 'Treasurer' },
       ],
       selectedCandidate: null,
-      selected_position: null,
+      selected_position: 1,
       positions: [
         { id: 1, name: 'PRESIDENT' },
         { id: 2, name: 'VICE PRESIDENT' },
@@ -118,8 +127,8 @@ export default {
     }
   },
   mounted() {
-    this.main();
-    this.textareaValue = 'console'
+    // this.main();
+    console.log(this.selected_position)
   },
 };
 </script>
