@@ -1,8 +1,0 @@
-{
-  "appId": "com.votingBlockhain.app",
-  "appName": "votingBlockhain",
-  "webDir": "dist",
-  "server": {
-    "androidScheme": "http"
-  }
-}

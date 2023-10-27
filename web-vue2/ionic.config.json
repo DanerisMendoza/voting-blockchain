@@ -1,7 +1,0 @@
-{
-  "name": "votingIO",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "vue"
-}
