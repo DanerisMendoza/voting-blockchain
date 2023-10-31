@@ -1,5 +1,32 @@
 <template>
   <v-app>
+    <v-app-bar app dark>
+      <!-- Add your logo or title here -->
+      <v-app-bar-title>
+        Voting Mobile
+      </v-app-bar-title>
+
+      <!-- Use v-spacer to push the menu button to the end -->
+      <v-spacer></v-spacer>
+
+      <!-- Add a dropdown menu with a logout button -->
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" text>
+            Menu
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item @click="submitLogout">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      <!-- You can add other items to the header as needed -->
+
+    </v-app-bar>
     <v-main>
       <v-container>
         <router-view />
@@ -28,6 +55,17 @@ export default {
       ],
     };
   },
+  methods: {
+    submitLogout() {
+      this.$store.dispatch("Logout").then((response) => {
+        if (response['message'] === "success") {
+          localStorage.removeItem("vb-token");
+          sessionStorage.removeItem("vb-token");
+          this.$router.push("/");
+        }
+      });
+    },
+  }
 };
 </script>
 
@@ -43,8 +81,8 @@ export default {
   bottom: 0;
   width: 100%;
 }
+
 body {
   overflow-x: hidden;
 }
-
 </style>
