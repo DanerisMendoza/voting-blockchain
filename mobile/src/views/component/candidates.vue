@@ -91,7 +91,7 @@ export default {
                 // You may want to add additional setup logic here
                 const votes = await this.getAllVotesFromContract();
                 // Log the votes to the console
-                console.log(votes);
+                // console.log(votes);
 
             } catch (error) {
                 console.error('Error in main:', error.message);

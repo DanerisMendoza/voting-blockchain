@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-item-group active-class="primary">
-      <v-autocomplete v-model="selected_position" :items="positions" item-text="name" item-value="id" auto-select-first
+      <v-autocomplete v-model="selected_position" :items="POSISTIONS" item-text="name" item-value="id" auto-select-first
         chips label="POSISTION"></v-autocomplete>
       <v-row>
         <v-col cols="12">
@@ -29,12 +29,12 @@ import { mapGetters } from 'vuex';
 export default {
   components: { candidates, voteList },
   computed: {
-    ...mapGetters(["SELECTED_POSITION"]),
+    ...mapGetters(["SELECTED_POSITION","POSISTIONS"]),
   },
   watch: {
     selected_position: {
       handler(val) {
-        this.store.commit('SELECTED_POSITION',val)
+        this.$store.commit('SELECTED_POSITION',this.POSISTIONS[val])
       }
     },
   },
@@ -62,12 +62,6 @@ export default {
       ],
       selectedCandidate: null,
       selected_position: 1,
-      positions: [
-        { id: 1, name: 'PRESIDENT' },
-        { id: 2, name: 'VICE PRESIDENT' },
-        { id: 3, name: 'SECRETARY' },
-        // Add more positions as needed
-      ]
     };
   },
   methods: {
@@ -109,7 +103,7 @@ export default {
         // You may want to add additional setup logic here
         const votes = await this.getAllVotesFromContract();
         // Log the votes to the console
-        console.log(votes);
+        // console.log(votes);
 
       } catch (error) {
         console.error('Error in main:', error.message);
@@ -129,6 +123,9 @@ export default {
   mounted() {
     // this.main();
     // console.log(this.selected_position)
+    this.$store.dispatch('GetPositions').then(()=>{
+      console.log(this.POSISTIONS)
+    })
   },
 };
 </script>
