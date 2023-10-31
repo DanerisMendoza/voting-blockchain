@@ -1,27 +1,24 @@
 import api from '@/api/index'
 export default {
     state: {
-      SELECTED_POSITION: 1,
-      POSISTIONS: [],
+      POSITIONS: [],
       CANDIDATES: []
     },
     
     getters: {
-      SELECTED_POSITION:(state) => state.SELECTED_POSITION,
-      POSISTIONS:(state) => state.POSISTIONS,
+      POSITIONS:(state) => state.POSITIONS,
       CANDIDATES:(state) => state.CANDIDATES,
     },
 
     mutations: {
-      SELECTED_POSITION:(state, data)=>{state.SELECTED_POSITION = data},
-      POSISTIONS:(state, data)=>{state.POSISTIONS = data},
+      POSITIONS:(state, data)=>{state.POSITIONS = data},
       CANDIDATES:(state, data)=>{state.CANDIDATES = data},
     },
     actions: {
       GetPositions({ commit }) {
         return new Promise((resolve, reject) => {
           api.get('api/GetPositions').then((response) => {
-            commit('POSISTIONS', response.data)
+            commit('POSITIONS', response.data)
             resolve(response.data)
           }).catch((error) => {
             reject(error)
