@@ -9,7 +9,8 @@ class PositionController extends Controller
 {
     public function GetPositions()
     {
-        $userDetail = DB::table('positions')->get();
-        return $userDetail;
+        $positions = DB::table('positions')
+        ->get();
+        return $positions;
     }
 }

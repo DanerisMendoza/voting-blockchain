@@ -21,7 +21,7 @@
   
 <script>
 import Web3 from 'web3';
-import LandRegistrationContract from '../../../../blockchain/build/contracts/VotingSystem.json';
+import VotingContract from '../../../../blockchain/build/contracts/VotingSystem.json';
 import candidates from '@/views/component/candidates.vue';
 import voteList from '@/views/component/voteList.vue';
 import { mapGetters } from 'vuex';
@@ -29,12 +29,13 @@ import { mapGetters } from 'vuex';
 export default {
   components: { candidates, voteList },
   computed: {
-    ...mapGetters(["SELECTED_POSITION","POSISTIONS"]),
+    ...mapGetters(["SELECTED_POSITION", "POSISTIONS", "CANDIDATES"]),
   },
   watch: {
     selected_position: {
       handler(val) {
-        this.$store.commit('SELECTED_POSITION',this.POSISTIONS[val])
+        console.log(this.selected_position)
+        this.$store.commit('SELECTED_POSITION', this.POSISTIONS.find(item => item.id === this.selected_position).id)
       }
     },
   },
@@ -47,19 +48,6 @@ export default {
       web3: null,
       contract: null,
       account: '',
-      options: [
-        { id: 1, name: 'john', votes: 0, position: 'President' },
-        { id: 2, name: 'michael', votes: 0, position: 'Vice President' },
-        { id: 3, name: 'jason', votes: 0, position: 'Secretary' },
-        { id: 4, name: 'angelo', votes: 0, position: 'Treasurer' },
-        { id: 5, name: 'aron', votes: 0, position: 'President' },
-        { id: 6, name: 'shiba', votes: 0, position: 'President' },
-        { id: 7, name: 'vince', votes: 0, position: 'Vice President' },
-        { id: 8, name: 'cath', votes: 0, position: 'Vice President' },
-        { id: 9, name: 'andres', votes: 0, position: 'Secretary' },
-        { id: 10, name: 'billy', votes: 0, position: 'Secretary' },
-        { id: 11, name: 'reid', votes: 0, position: 'Treasurer' },
-      ],
       selectedCandidate: null,
       selected_position: 1,
     };
@@ -67,52 +55,34 @@ export default {
   methods: {
     async vote() {
       try {
-        // Validate private key format
         if (!/^0x[0-9a-fA-F]{64}$/.test(this.privateKey)) {
           throw new Error('Invalid private key format');
         }
-
-        // Use the provided private key for transaction signing
         const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
         console.log(this.selectedCandidate)
         this.textareaValue = account
-        // this.textareaValue = account
         await this.contract.methods.castVote(0, this.selectedCandidate.id, this.selectedCandidate.name, 1, 'john').send({
           from: account.address,
-          gas: 2000000, // Adjust the gas limit according to your contract's needs
+          gas: 2000000, 
         }).then((response) => {
           this.textareaValue = response
         });
-
-
       } catch (error) {
         this.textareaValue = error
         console.error('Error registering land:', error.message);
-        // Handle or display the error in your application
       }
     },
     async main() {
       try {
-        // Initialize Web3 with the injected provider (MetaMask) or fallback to a local provider
-        // this.web3 = new Web3(Web3.givenProvider || 'http://192.168.1.4:7545');
         this.web3 = new Web3('http://192.168.1.4:7545');
-
-        // Create a contract instance
-        this.contract = new this.web3.eth.Contract(LandRegistrationContract.abi, LandRegistrationContract.networks['5777'].address);
-
-        // You may want to add additional setup logic here
+        this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
         const votes = await this.getAllVotesFromContract();
-        // Log the votes to the console
-        // console.log(votes);
-
       } catch (error) {
         console.error('Error in main:', error.message);
-        // Handle or display the error in your application
       }
     },
     async getAllVotesFromContract() {
       try {
-        // Call the getAllVotes method on the smart contract
         const result = await this.contract.methods.getAllVotes().call();
         return result;
       } catch (error) {
@@ -122,9 +92,9 @@ export default {
   },
   mounted() {
     // this.main();
-    // console.log(this.selected_position)
-    this.$store.dispatch('GetPositions').then(()=>{
-      console.log(this.POSISTIONS)
+    this.$store.dispatch('GetPositions').then(() => {
+      this.selected_position = this.POSISTIONS[0].id
+      this.$store.commit('SELECTED_POSITION', this.selected_position)
     })
   },
 };
