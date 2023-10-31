@@ -128,7 +128,7 @@ export default {
   },
   mounted() {
     // this.main();
-    console.log(this.selected_position)
+    // console.log(this.selected_position)
   },
 };
 </script>

@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -65,6 +66,14 @@ export default {
         }
       });
     },
+  },
+  computed: {
+    ...mapGetters(["USER_DETAILS"]),
+  },
+  mounted() {
+    this.$store.dispatch('GetUserDetails').then(()=>{
+      console.log(this.USER_DETAILS)
+    })
   }
 };
 </script>

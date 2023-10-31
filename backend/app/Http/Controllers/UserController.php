@@ -59,6 +59,25 @@ class UserController extends Controller
         }
     }
 
+    public function GetUserDetails()
+    {
+        $userId = Auth::user()->id;
+        $userDetail = DB::table('users')
+            ->where('users.id', $userId)
+            ->select(
+                'users.age',
+                'users.gender',
+                'users.email',
+                'users.address',
+                'users.first_name',
+                'users.middle_name',
+                'users.last_name',
+                DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name) as name")
+            )
+            ->first();
+        return $userDetail;
+    }
+
     public function Logout(Request $request)
     {
         $user = $request->user();

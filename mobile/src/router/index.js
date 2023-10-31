@@ -21,7 +21,6 @@ const routes = [
     },
     {
         path: '/TABSPAGE',
-        name: '/TABSPAGE',
         component: TABSPAGE,
         children: [
             {

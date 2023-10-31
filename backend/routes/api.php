@@ -9,5 +9,6 @@ Route::post('/Login', [UserController::class, 'Login']);
 Route::middleware('auth:api')->group(function () {
     //USER API
     Route::get('/authenticate', [UserController::class, 'authenticate']);
+    Route::get('/GetUserDetails', [UserController::class, 'GetUserDetails']);
     Route::post('/Logout', [UserController::class, 'Logout']);
 });
