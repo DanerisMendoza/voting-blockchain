@@ -5,13 +5,19 @@ import PROFILE from '@/views/module/PROFILE.vue';
 import DASHBOARD from '@/views/module/DASHBOARD.vue';
 import VOTING from '@/views/module/VOTING.vue';
 import TEST from '@/views/module/TEST.vue';
+import LOGIN from '@/views/module/LOGIN.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
     {
         path: '/',
-        redirect: '/TABSPAGE'
+        redirect: '/LOGIN'
+    },
+    {
+        path: '/LOGIN',
+        name: '/LOGIN',
+        component: LOGIN,
     },
     {
         path: '/TABSPAGE',
