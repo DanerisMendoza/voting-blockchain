@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -14,7 +15,7 @@ class UserSeeder extends Seeder
         $faker = Faker::create();
         $User = new User();
         $User->username = 'admin';
-        $User->password = bcrypt('123');   
+        $User->password = Hash::make('123');  
         $User->first_name = $faker->firstName;
         $User->middle_name = $faker->lastName;
         $User->last_name = $faker->lastName;

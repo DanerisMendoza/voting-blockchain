@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('address');
             $table->integer('age');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
