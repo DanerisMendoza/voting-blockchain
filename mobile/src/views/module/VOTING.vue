@@ -8,7 +8,9 @@
           <v-row v-for="(item, index) in CANDIDATES" :key="item.id">
             <v-col cols="12">
               <v-item>
-                <v-card :class="{ 'highlight-card': voteList.includes(item.id) }" @click="selectCard(item.id)">
+                <v-card :class="{ 'highlight-card': voteList.some(item2 => item2.id == item.id) }"
+                  @click="selectCard(item)">
+                  <!-- <v-card :class="{ 'highlight-card': voteList.includes(item.id) }" @click="selectCard(item)"> -->
                   <v-row>
                     <v-col cols="12">
                       <v-card-title>{{ item.name }}</v-card-title>
@@ -103,13 +105,19 @@ export default {
         }
       }
       this.$store.dispatch('GetCandidates', payload).then((response) => {
-        console.log(this.CANDIDATES)
+        // console.log(this.CANDIDATES)
       })
     },
-    selectCard(cardId) {
-      this.voteList.push(cardId)
-      // console.log(cardId)
-      // this.voteList = (this.voteList === cardId) ? null : cardId;
+    selectCard(item) {
+      if (this.voteList.some(item2 => item2.position === item.position)) {
+        const index = this.voteList.findIndex(item2 => item2.position === item.position);
+        this.$set(this.voteList, index, item);
+      } else {
+        // Add the new item to the voteList
+        this.voteList.push(item);
+      }
+
+      console.log(this.voteList)
     },
   },
   mounted() {
