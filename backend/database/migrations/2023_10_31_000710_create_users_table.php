@@ -20,9 +20,10 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->string('gender');
-            $table->string('profile_pic_path');
+            $table->string('profile_pic_path')->nullable();
             $table->string('address');
             $table->integer('age');
+            $table->timestamps();
         });
     }
 
