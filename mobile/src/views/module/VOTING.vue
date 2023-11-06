@@ -2,7 +2,7 @@
   <v-app>
     <v-item-group active-class="primary">
       <v-autocomplete v-model="selected_position" :items="POSITIONS" item-text="name" item-value="id" auto-select-first
-        chips label="POSISTION"></v-autocomplete>
+        chips label="POSISTION" ></v-autocomplete>
       <v-row>
         <v-col cols="12">
           <v-row v-for="(item, index) in CANDIDATES" :key="item.id">
@@ -23,7 +23,10 @@
           </v-row>
           <br>
           <center>
-            <v-btn>
+            <v-btn @click="prev()">
+              PREV
+            </v-btn>
+            <v-btn @click="next()">
               NEXT
             </v-btn>
           </center>
@@ -45,13 +48,17 @@ export default {
   },
   watch: {
     selected_position: {
-      handler(val) {
+      handler() {
         this.fetchPosition()
+        const currentIndex = this.POSITIONS.find(item => item.id === this.selected_position);
+        this.currentIndex = this.POSITIONS.indexOf(currentIndex)
       }
     },
   },
+
   data() {
     return {
+      currentIndex: 0,
       voteList: [],
       privateKey: '0xdd63a9c53869849a6e14cad7330600f63d700617615e9db65c7a914b6f68f362', // Add a data property for the private key
       web3: null,
@@ -62,6 +69,18 @@ export default {
     };
   },
   methods: {
+    prev() {
+      if ((this.currentIndex - 1) > -1) {
+        this.currentIndex -= 1
+        this.selected_position = this.POSITIONS[this.currentIndex].id
+      }
+    },
+    next() {
+      if ((this.currentIndex + 1) < this.POSITIONS.length) {
+        this.currentIndex += 1
+        this.selected_position = this.POSITIONS[this.currentIndex].id
+      }
+    },
     async vote() {
       try {
         if (!/^0x[0-9a-fA-F]{64}$/.test(this.privateKey)) {
@@ -123,9 +142,11 @@ export default {
   mounted() {
     // this.main();
     this.$store.dispatch('GetPositions').then(() => {
-      this.selected_position = this.POSITIONS[0].id
+      console.log(this.POSITIONS)
+      this.selected_position = this.POSITIONS[this.currentIndex].id
     })
     this.fetchPosition()
+    console.log(this.currentIndex)
   },
 };
 </script>
