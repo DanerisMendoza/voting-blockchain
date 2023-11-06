@@ -2,7 +2,7 @@
   <v-app>
     <v-item-group active-class="primary">
       <v-autocomplete v-model="selected_position" :items="POSITIONS" item-text="name" item-value="id" auto-select-first
-        chips label="POSISTION" ></v-autocomplete>
+        chips label="POSISTION"></v-autocomplete>
       <v-row>
         <v-col cols="12">
           <v-row v-for="(item, index) in CANDIDATES" :key="item.id">
@@ -28,6 +28,9 @@
             </v-btn>
             <v-btn @click="next()">
               NEXT
+            </v-btn>
+            <v-btn @click="submit()">
+              SUBMIT
             </v-btn>
           </center>
         </v-col>
@@ -69,6 +72,26 @@ export default {
     };
   },
   methods: {
+    submit() {
+      if(this.voteList.length != this.POSITIONS.length){
+        this.$swal.fire({
+          icon: 'warning',
+          title: 'Incomplete Vote List',
+          text: 'Please complete your vote list.',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        });
+      }else{
+        console.log(this.voteList)
+        // this.$swal.fire({
+        //   icon: 'success',
+        //   title: 'Vote Success',
+        //   text: 'Your vote has been successfully recorded.',
+        //   confirmButtonColor: '#3085d6',
+        //   confirmButtonText: 'OK'
+        // });
+      }
+    },
     prev() {
       if ((this.currentIndex - 1) > -1) {
         this.currentIndex -= 1
@@ -142,11 +165,9 @@ export default {
   mounted() {
     // this.main();
     this.$store.dispatch('GetPositions').then(() => {
-      console.log(this.POSITIONS)
       this.selected_position = this.POSITIONS[this.currentIndex].id
     })
     this.fetchPosition()
-    console.log(this.currentIndex)
   },
 };
 </script>
