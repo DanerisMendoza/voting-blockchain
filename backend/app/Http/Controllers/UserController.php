@@ -18,8 +18,10 @@ class UserController extends Controller
         ]);
         $login = DB::table('users')
             ->where('username', $request->username)
-            ->select('users.password', 'users.username')
+            ->select('users.password', 'users.username', 'users.user_role')
             ->first();
+
+        $userrole = $login->user_role;
 
         if ($login) {
             if (Hash::check($request->password, $login->password)) {
@@ -29,6 +31,7 @@ class UserController extends Controller
                     'client_id'     => $passwordGrantClient->id,
                     'client_secret' => $passwordGrantClient->secret,
                     'username'      => $request->username,
+                    'user_role'      => $userrole,
                     'password'      => $request->password,
                     'scope'         => '*',
                 ];
@@ -40,6 +43,7 @@ class UserController extends Controller
                     $responseContent = [
                         'message' => 'success',
                         'token' => $token,
+                        'user_role' => $userrole,
                     ];
                     return response()->json($responseContent, 200);
                 }

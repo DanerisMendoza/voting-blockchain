@@ -15,10 +15,12 @@ class UserSeeder extends Seeder
         $faker = Faker::create();
         $User = new User();
         $User->username = 'admin';
-        $User->password = Hash::make('123');  
+        $User->password = Hash::make('123');
         $User->first_name = $faker->firstName;
         $User->middle_name = $faker->lastName;
         $User->last_name = $faker->lastName;
+        $User->suffix = $faker->suffix;
+        $User->user_role = 1; // 1 is admin 2 is endusers
         $User->email = $faker->email;
         $User->gender = $faker->randomElement(['male', 'female']);
         $User->address = $faker->address;
