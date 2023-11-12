@@ -8,6 +8,7 @@ use App\Http\Controllers\PositionController;
 
 
 Route::post('/Login', [UserController::class, 'Login']);
+Route::post('/Register', [UserController::class, 'Register']);
 Route::middleware('auth:api')->group(function () {
     //USER API
     Route::get('/authenticate', [UserController::class, 'authenticate']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Passport\Client;
 use Illuminate\Support\Facades\Auth;
@@ -87,5 +88,27 @@ class UserController extends Controller
         $user = $request->user();
         $user->token()->revoke();
         return ['message' => 'success'];
+    }
+
+    public function Register(Request $request)
+    {
+        $pass = Hash::make($request->password);
+        // Create a new user
+        $newVoter = new User();
+        $newVoter->first_name = $request->firstname;
+        $newVoter->middle_name = $request->midname;
+        $newVoter->last_name = $request->lastname;
+        $newVoter->user_role = 2;
+        $newVoter->suffix = $request->suffix;
+        $newVoter->email = $request->email;
+        $newVoter->age = $request->age;
+        $newVoter->address = $request->address;
+        $newVoter->gender = $request->gender;
+        $newVoter->username = $request->username;
+        $newVoter->password = $pass;
+        // Save the user to the database
+        $newVoter->save();
+        // return $newVoter;
+        return response()->json(['message' => 'Successfully Registered'], 200);
     }
 }
