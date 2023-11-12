@@ -12,7 +12,7 @@
                 </v-img> -->
                     Vote Now
                     <v-spacer></v-spacer>
-                    <v-btn text color="#0000FF" x-small>Not A Voter? Register Here</v-btn>
+                    <v-btn text color="#0000FF" x-small @click="registerDialog()">Not A Voter? Register Here</v-btn>
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-card-subtitle></v-card-subtitle>
@@ -36,12 +36,15 @@
         </v-col>
       </v-row>
     </v-container>
+    <RegisterDialog />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import Swal from 'sweetalert2';
 
+import RegisterDialog from '@/components/Dialogs/RegisterDialog.vue';
 // import 'mdi/css/materialdesignicons.css';
 export default {
   data() {
@@ -52,6 +55,9 @@ export default {
     };
   },
   methods: {
+    registerDialog() {
+      this.$store.commit('SET_REGISTER_DIALOG', true);
+    },
     login() {
       const payload = {
         username: this.username,
@@ -67,6 +73,14 @@ export default {
       });
     },
   },
+  computed: {
+    ...mapGetters([
+      'GET_REGISTER_DIALOG'
+    ])
+  },
+  components: {
+    RegisterDialog
+  }
 };
 </script>
 
