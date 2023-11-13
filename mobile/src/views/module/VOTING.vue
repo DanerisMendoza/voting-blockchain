@@ -8,13 +8,12 @@
           <v-row v-for="(item, index) in CANDIDATES" :key="item.id">
             <v-col cols="12">
               <v-item>
-                <v-card :class="{ 'highlight-card': voteList.some(item2 => item2.id == item.id) }"
+                <v-card :class="{ 'highlight-card': voteList.some(item2 => item2.candidate_id == item.candidate_id) }"
                   @click="selectCard(item)">
-                  <!-- <v-card :class="{ 'highlight-card': voteList.includes(item.id) }" @click="selectCard(item)"> -->
                   <v-row>
                     <v-col cols="12">
-                      <v-card-title>{{ item.name }}</v-card-title>
-                      <v-card-subtitle>Position: {{ item.position }}</v-card-subtitle>
+                      <v-card-title>{{ item.candidate_name }}</v-card-title>
+                      <v-card-subtitle>Position: {{ item.position_name }}</v-card-subtitle>
                     </v-col>
                   </v-row>
                 </v-card>
@@ -47,7 +46,7 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS"]),
   },
   watch: {
     selected_position: {
@@ -63,7 +62,7 @@ export default {
     return {
       currentIndex: 0,
       voteList: [],
-      privateKey: '0xdd63a9c53869849a6e14cad7330600f63d700617615e9db65c7a914b6f68f362', // Add a data property for the private key
+      privateKey: '0xaabfcaa48207c5821fe36164144f76905fbbdb63df0d66994726551e56a0a984', // Add a data property for the private key
       web3: null,
       contract: null,
       account: '',
@@ -72,8 +71,8 @@ export default {
     };
   },
   methods: {
-    submit() {
-      if(this.voteList.length != this.POSITIONS.length){
+    async submit() {
+      if (this.voteList.length != this.POSITIONS.length) {
         this.$swal.fire({
           icon: 'warning',
           title: 'Incomplete Vote List',
@@ -81,15 +80,35 @@ export default {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'OK'
         });
-      }else{
-        console.log(this.voteList)
-        // this.$swal.fire({
-        //   icon: 'success',
-        //   title: 'Vote Success',
-        //   text: 'Your vote has been successfully recorded.',
-        //   confirmButtonColor: '#3085d6',
-        //   confirmButtonText: 'OK'
-        // });
+      } else {
+        const candidateIds = this.voteList.map(vote => vote.candidate_id);
+        const candidateName = this.voteList.map(vote => vote.candidate_name);
+        const positionIDs = this.voteList.map(vote => vote.position_id);
+        const positionName = this.voteList.map(vote => vote.position_name);
+        try {
+          if (!/^0x[0-9a-fA-F]{64}$/.test(this.privateKey)) {
+            throw new Error('Invalid private key format');
+          }
+          const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
+          for (let i = 0; i < candidateIds.length; i++) {
+            await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i]).send({
+              from: account.address,
+              gas: 2000000,
+            }).then((response) => {
+              console.log(response)
+            });
+          }
+        } catch (error) {
+          this.textareaValue = error
+          console.error('Error voting:', error.message);
+        }
+        this.$swal.fire({
+          icon: 'success',
+          title: 'Vote Success',
+          text: 'Your vote has been successfully recorded.',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        });
       }
     },
     prev() {
@@ -104,30 +123,24 @@ export default {
         this.selected_position = this.POSITIONS[this.currentIndex].id
       }
     },
-    async vote() {
-      try {
-        if (!/^0x[0-9a-fA-F]{64}$/.test(this.privateKey)) {
-          throw new Error('Invalid private key format');
-        }
-        const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
-        console.log(this.selectedCandidate)
-        this.textareaValue = account
-        await this.contract.methods.castVote(0, this.selectedCandidate.id, this.selectedCandidate.name, 1, 'john').send({
-          from: account.address,
-          gas: 2000000,
-        }).then((response) => {
-          this.textareaValue = response
-        });
-      } catch (error) {
-        this.textareaValue = error
-        console.error('Error registering land:', error.message);
-      }
-    },
+
     async main() {
       try {
-        this.web3 = new Web3('http://192.168.1.4:7545');
+        this.web3 = new Web3('http://192.168.1.5:7545');
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
         const votes = await this.getAllVotesFromContract();
+
+        // Convert each voteID to an integer within the array
+        for (let i = 0; i < votes.length; i++) {
+          votes[i].positionID = parseInt(votes[i].positionID, 10);
+          votes[i].candidateID = parseInt(votes[i].candidateID, 10);
+          votes[i].voteID = parseInt(votes[i].voteID, 10);
+          votes[i].voterID = parseInt(votes[i].voterID, 10);
+        }
+
+        console.log(votes);
+
+
       } catch (error) {
         console.error('Error in main:', error.message);
       }
@@ -146,24 +159,19 @@ export default {
           selectedPositionID: this.selected_position
         }
       }
-      this.$store.dispatch('GetCandidates', payload).then((response) => {
-        // console.log(this.CANDIDATES)
-      })
+      this.$store.dispatch('GetCandidates', payload)
     },
     selectCard(item) {
-      if (this.voteList.some(item2 => item2.position === item.position)) {
-        const index = this.voteList.findIndex(item2 => item2.position === item.position);
+      if (this.voteList.some(item2 => item2.position_name === item.position_name)) {
+        const index = this.voteList.findIndex(item2 => item2.position_name === item.position_name);
         this.$set(this.voteList, index, item);
       } else {
-        // Add the new item to the voteList
         this.voteList.push(item);
       }
-
-      console.log(this.voteList)
     },
   },
   mounted() {
-    // this.main();
+    this.main();
     this.$store.dispatch('GetPositions').then(() => {
       this.selected_position = this.POSITIONS[this.currentIndex].id
     })

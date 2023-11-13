@@ -65,6 +65,7 @@ class UserController extends Controller
         $userDetail = DB::table('users')
             ->where('users.id', $userId)
             ->select(
+                'users.id',
                 'users.age',
                 'users.gender',
                 'users.email',
