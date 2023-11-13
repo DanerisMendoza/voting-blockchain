@@ -129,17 +129,17 @@ export default {
         this.web3 = new Web3('http://192.168.1.5:7545');
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
         const votes = await this.getAllVotesFromContract();
-
-        // Convert each voteID to an integer within the array
-        for (let i = 0; i < votes.length; i++) {
-          votes[i].positionID = parseInt(votes[i].positionID, 10);
-          votes[i].candidateID = parseInt(votes[i].candidateID, 10);
-          votes[i].voteID = parseInt(votes[i].voteID, 10);
-          votes[i].voterID = parseInt(votes[i].voterID, 10);
-        }
-
-        console.log(votes);
-
+        const votes2 = votes.map(vote => ({
+          candidateID: parseInt(vote.candidateID, 10),
+          candidateName: vote.candidateName,
+          positionID: parseInt(vote.positionID, 10),
+          positionName: vote.positionName,
+          voteID: parseInt(vote.voteID, 10),
+          voterAddress: vote.voterAddress,
+          voterID: parseInt(vote.voterID, 10),
+          voterName: vote.voterName,
+        }));
+      
 
       } catch (error) {
         console.error('Error in main:', error.message);

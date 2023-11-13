@@ -7,19 +7,21 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "axios": "^0.21.4",
-    "sweetalert2": "^11.7.27",
     "@capacitor/android": "5.5.1",
     "@capacitor/app": "5.0.6",
     "@capacitor/core": "5.5.1",
     "@capacitor/haptics": "5.0.6",
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
+    "apexcharts": "^3.44.0",
+    "axios": "^0.21.4",
     "core-js": "^3.8.3",
+    "sweetalert2": "^11.7.27",
     "vue": "^2.6.14",
+    "vue-apexcharts": "^1.6.2",
     "vuetify": "^2.6.0",
-    "web3": "^4.2.1",
-    "vuex": "^2.5.0"
+    "vuex": "^2.5.0",
+    "web3": "^4.2.1"
   },
   "devDependencies": {
     "@capacitor/cli": "5.5.1",

@@ -5,7 +5,10 @@ import Vuetify from 'vuetify'; // Import Vuetify
 import router from './router';
 import store from './store'
 import Swal from 'sweetalert2';
+import VueApexCharts from 'vue-apexcharts'
 
+Vue.component('apexchart', VueApexCharts)
+Vue.use(VueApexCharts)
 Vue.config.productionTip = false
 Vue.use(Vuetify);
 Vue.prototype.$swal = Swal;
