@@ -27,7 +27,7 @@
                 <v-list-item link>
                     <v-list-item-icon><v-icon>mdi-exit</v-icon></v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Logout</v-list-item-title>
+                        <v-list-item-title @click="Logout()">Logout</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -37,6 +37,11 @@
 
 <script>
 export default {
+    methods: {
+        Logout() {
+            this.$store.dispatch("Logout");
+        },
+    },
     data() {
         return {
             items: [

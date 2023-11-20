@@ -36,5 +36,56 @@ export default {
           });
       });
     },
+    // Logout() {
+    //   const token = localStorage.getItem("token"); // Replace with your actual token getter
+    //   api
+    //     .post(
+    //       "/api/Logout",
+    //       {},
+    //       {
+    //         headers: {
+    //           Authorization: "Bearer " + token,
+    //         },
+    //       }
+    //     )
+    //     .then((response) => {
+    //       console.log(response);
+    //       localStorage.removeItem("user_role");
+    //       localStorage.removeItem("token");
+    //       router.push({ path: "/" });
+    //     })
+    //     .catch((error) => {
+    //       console.error("Logout error:", error);
+    //     });
+    // },
+
+    Logout({ commit }) {
+      const token = localStorage.getItem("token");
+      return new Promise((resolve, reject) => {
+        api
+          .post(
+            "api/Logout",
+            {},
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then((response) => {
+            if (response.data.message === "success") {
+              localStorage.removeItem("user_role");
+              localStorage.removeItem("token");
+              router.push({ path: "/" });
+              resolve(response.data);
+            } else {
+              reject(new Error("Logout failed"));
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
   },
 };

@@ -118,7 +118,6 @@ export default {
                 }
                 this.$store.dispatch("Register", payload).then((response) => {
                     if (response.status == 200) {
-                        console.log(response)
                         Swal.fire({
                             text: response.data.message,
                             icon: "success",

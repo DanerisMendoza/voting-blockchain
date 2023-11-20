@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <v-btn tile small color="red" @click="Logout()">Logout</v-btn>
     </div>
 </template>
 
@@ -11,6 +11,12 @@ export default {
         }
     },
     methods: {
+        Logout() {
+            this.$store.dispatch("Logout");
+            // localStorage.removeItem("user_role");
+            // localStorage.removeItem("token");
+            // this.$router.push({ path: "/" })
+        },
     },
     mounted() {
 
