@@ -5,6 +5,7 @@ import Vuetify from "vuetify"; // Import Vuetify
 import router from "./router";
 import store from "./store";
 import Swal from "sweetalert2";
+import "@mdi/font/css/materialdesignicons.css";
 
 Vue.config.productionTip = false;
 Vue.use(Vuetify);

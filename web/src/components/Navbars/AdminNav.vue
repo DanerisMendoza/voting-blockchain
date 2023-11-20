@@ -25,7 +25,7 @@
                 </v-list-item>
                 <v-divider></v-divider>
                 <v-list-item link>
-                    <v-list-item-icon><v-icon>mdi-exit</v-icon></v-list-item-icon>
+                    <v-list-item-icon><v-icon>mdi-logout</v-icon></v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title @click="Logout()">Logout</v-list-item-title>
                     </v-list-item-content>
@@ -46,9 +46,9 @@ export default {
         return {
             items: [
                 { title: 'Dashboard', icon: 'mdi-view-dashboard', path: '/dashboard' },
-                { title: 'Positions', icon: 'mdi-image', path: '/positions' },
-                { title: 'List of Candidates', icon: 'mdi-help-box', path: '/candidates' },
-                { title: 'List of Voters', icon: 'mdi-help-box', path: '/voterlist' },
+                { title: 'Positions', icon: 'mdi-account-group', path: '/positions' },
+                { title: 'List of Candidates', icon: 'mdi-format-list-group', path: '/candidates' },
+                { title: 'List of Voters', icon: 'mdi-format-list-checkbox', path: '/voterlist' },
             ],
         }
     },

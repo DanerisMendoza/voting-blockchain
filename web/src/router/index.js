@@ -74,29 +74,28 @@ router.beforeEach((to, from, next) => {
       // Check if the user has the required role
       const requiredRole = to.meta.role;
       if (parseInt(userRole) === requiredRole) {
-        next(); // Allow access
+        next();
       } else {
-        // Redirect to a not authorized page or show an error message
-        next("/"); // For example, redirect to the home page
+        next("/");
       }
     } else {
-      // Redirect to the login page if the user is not authenticated
-      next("/"); // For example, redirect to the home page
+      next("/");
     }
   } else if (to.path === "/") {
-    // If the user is already authenticated, redirect them to their dashboard
     const userRole = localStorage.getItem("user_role");
     if (userRole) {
       if (parseInt(userRole) === 1) {
-        next("/admin/dashboard");
+        // Redirect to /admin/dashboard for user with role 1
+        next("/dashboard");
       } else if (parseInt(userRole) === 2) {
+        // Redirect to /voters for user with role 2
         next("/voters");
       }
     } else {
-      next(); // Allow access to the default path for non-authenticated users
+      next();
     }
   } else {
-    next(); // Allow access for routes that do not require authentication
+    next();
   }
 });
 

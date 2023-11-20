@@ -64,10 +64,10 @@ export default {
         password: this.password,
       }
       this.$store.dispatch("Login", payload).then((response) => {
-        if (response.message == "success") {
+        if (response.message) {
           Swal.fire({
-            text: "Login Successfully!",
-            icon: "success"
+            text: response.message,
+            icon: response.icon
           })
         }
       });
