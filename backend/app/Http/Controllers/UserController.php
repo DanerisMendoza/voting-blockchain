@@ -22,7 +22,16 @@ class UserController extends Controller
             ->select('users.password', 'users.username', 'users.user_role')
             ->first();
 
-        $userrole = $login->user_role;
+        if ($login) {
+            $userrole = $login->user_role;
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Please Check the Username or Password.',
+                    'icon' => 'error'
+                ]
+            );
+        }
 
         if ($login) {
             if (Hash::check($request->password, $login->password)) {
@@ -42,7 +51,8 @@ class UserController extends Controller
                     $data = json_decode($response->getContent());
                     $token = $data->access_token;
                     $responseContent = [
-                        'message' => 'success',
+                        'message' => 'Login Successfully!',
+                        'icon' => 'success',
                         'token' => $token,
                         'user_role' => $userrole,
                     ];
@@ -51,14 +61,16 @@ class UserController extends Controller
             } else {
                 return response()->json(
                     [
-                        'message' => 'The password were incorrect'
+                        'message' => 'The password were incorrect',
+                        'icon' => 'error'
                     ],
                 );
             }
         } else {
             return response()->json(
                 [
-                    'message' => 'The username were incorrect'
+                    'message' => 'The username were incorrect',
+                    'icon' => 'error'
                 ],
             );
         }
