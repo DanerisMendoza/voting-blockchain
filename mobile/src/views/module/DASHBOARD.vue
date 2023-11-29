@@ -78,7 +78,6 @@ export default {
 
         getChartOptions(position) {
             const placeholderLabels = Array.from({ length: Object.keys(position.candidates).length }, (_, i) => ``);
-
             return {
                 chart: {
                     type: 'column',
@@ -91,9 +90,11 @@ export default {
                 },
                 legend: {
                     show: true,
+                    showForSingleSeries: true,
                 },
             };
         },
+
 
 
 
