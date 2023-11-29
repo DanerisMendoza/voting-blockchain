@@ -1,10 +1,18 @@
 <template>
     <div>
-        <v-btn tile small color="red" @click="Logout()">Logout</v-btn>
+        <v-row no-gutters>
+            <v-col cols="2">
+                <VotersNavVue />
+            </v-col>
+            <v-col cols="10">
+
+            </v-col>
+        </v-row>
     </div>
 </template>
 
 <script>
+import VotersNavVue from '@/components/Navbars/VotersNav.vue';
 export default {
     data() {
         return {
@@ -22,7 +30,7 @@ export default {
 
     },
     components: {
-
+        VotersNavVue,
     },
 
 }

@@ -7,6 +7,10 @@ import VotersView from "../views/VotersView.vue";
 import Positions from "../views/PositionsView.vue";
 import Candidates from "../views/CandidatesView.vue";
 import VoterList from "../views/VoterListView.vue";
+import Filing from "../views/FilingView.vue";
+import Profile from "../views/ProfileView.vue";
+import Voting from "../views/VotingView.vue";
+import VotersDashboard from "../views/VotersDashboardView.vue";
 
 Vue.use(VueRouter);
 
@@ -53,6 +57,32 @@ const routes = [
     name: "voters",
     component: VotersView,
     meta: { requiresAuth: true, role: 2 },
+    children: [
+      {
+        path: "/votersdashboard",
+        name: "votersdashboard",
+        component: VotersDashboard,
+        meta: { requiresAuth: true, role: 2 },
+      },
+      {
+        path: "/voting",
+        name: "voting",
+        component: Voting,
+        meta: { requiresAuth: true, role: 2 },
+      },
+      {
+        path: "/profile",
+        name: "profile",
+        component: Profile,
+        meta: { requiresAuth: true, role: 2 },
+      },
+      {
+        path: "/filing",
+        name: "filing",
+        component: Filing,
+        meta: { requiresAuth: true, role: 2 },
+      },
+    ],
   },
 
   {
@@ -89,7 +119,7 @@ router.beforeEach((to, from, next) => {
         next("/dashboard");
       } else if (parseInt(userRole) === 2) {
         // Redirect to /voters for user with role 2
-        next("/voters");
+        next("/votersdashboard");
       }
     } else {
       next();

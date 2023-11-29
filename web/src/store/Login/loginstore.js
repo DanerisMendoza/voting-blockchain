@@ -23,7 +23,7 @@ export default {
               if (checkrole == 1) {
                 router.push({ path: "/dashboard" });
               } else if (checkrole == 2) {
-                router.push({ path: "/voters" });
+                router.push({ path: "/votersdashboard" });
               } else {
                 router.push({ path: "/" });
               }
