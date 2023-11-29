@@ -12,6 +12,7 @@
 <script>
 import Web3 from 'web3';
 import VotingContract from '../../../../blockchain/build/contracts/VotingSystem.json';
+import { mapGetters } from "vuex";
 
 export default {
     data() {
@@ -21,10 +22,14 @@ export default {
             votesByPositionArray: [],
         };
     },
+    computed: {
+        ...mapGetters(["SETTINGS"]),
+    },
     methods: {
         async main() {
+            await this.$store.dispatch('GetSettings')
             try {
-                this.web3 = new Web3('http://192.168.1.5:7545');
+                this.web3 = new Web3(this.SETTINGS.url);
                 this.contract = new this.web3.eth.Contract(
                     VotingContract.abi,
                     VotingContract.networks['5777'].address
@@ -93,13 +98,14 @@ export default {
 
 
         getChartSeries(position) {
-            return Object.values(position.candidates).map(candidate => ({
+            let a = Object.values(position.candidates).map(candidate => ({
                 name: candidate.candidateName,
                 data: [candidate.voteCount],
             }));
+            return a
         },
     },
-    mounted() {
+    created() {
         this.main();
     },
 };

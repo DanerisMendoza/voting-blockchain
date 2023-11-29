@@ -46,7 +46,7 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS","SETTINGS"]),
   },
   watch: {
     selected_position: {
@@ -62,7 +62,7 @@ export default {
     return {
       currentIndex: 0,
       voteList: [],
-      privateKey: '0xaabfcaa48207c5821fe36164144f76905fbbdb63df0d66994726551e56a0a984', // Add a data property for the private key
+      privateKey: '0x3afc4651978a80301100b53a737018032b15541030c173a2a82095432e6092ae', // Add a data property for the private key
       web3: null,
       contract: null,
       account: '',
@@ -70,6 +70,7 @@ export default {
       selected_position: 1,
     };
   },
+
   methods: {
     async submit() {
       if (this.voteList.length != this.POSITIONS.length) {
@@ -89,7 +90,7 @@ export default {
           if (!/^0x[0-9a-fA-F]{64}$/.test(this.privateKey)) {
             throw new Error('Invalid private key format');
           }
-          const account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
+          const account = this.web3.eth.accounts.privateKeyToAccount(this.SETTINGS.private_key);
           for (let i = 0; i < candidateIds.length; i++) {
             await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i]).send({
               from: account.address,
@@ -125,8 +126,9 @@ export default {
     },
 
     async main() {
+      await this.$store.dispatch('GetSettings')
       try {
-        this.web3 = new Web3('http://192.168.1.5:7545');
+        this.web3 = new Web3(this.SETTINGS.url);
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
         const votes = await this.getAllVotesFromContract();
         const votes2 = votes.map(vote => ({
@@ -139,7 +141,7 @@ export default {
           voterID: parseInt(vote.voterID, 10),
           voterName: vote.voterName,
         }));
-      
+
 
       } catch (error) {
         console.error('Error in main:', error.message);
