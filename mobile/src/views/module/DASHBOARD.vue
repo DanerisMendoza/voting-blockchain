@@ -23,11 +23,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["SETTINGS"]),
+        ...mapGetters(["SETTINGS","ELECTION"]),
     },
     methods: {
         async main() {
             await this.$store.dispatch('GetSettings')
+            await this.$store.dispatch('GetActiveElection').then(()=>{
+                console.log(this.ELECTION)
+            })
             try {
                 this.web3 = new Web3(this.SETTINGS.url);
                 this.contract = new this.web3.eth.Contract(

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\PositionSeeder;
 use Database\Seeders\CandidateSeeder;
+use Database\Seeders\ElectionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             CandidateSeeder::class,
             SettingsSeeder::class,
+            ElectionSeeder::class,
         ]);
     }
 }
