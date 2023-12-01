@@ -11,6 +11,7 @@ import Filing from "../views/FilingView.vue";
 import Profile from "../views/ProfileView.vue";
 import Voting from "../views/VotingView.vue";
 import VotersDashboard from "../views/VotersDashboardView.vue";
+import PartyList from "../views/PartyListView.vue";
 
 Vue.use(VueRouter);
 
@@ -43,6 +44,12 @@ const routes = [
     path: "/candidates",
     name: "candidates",
     component: Candidates,
+    meta: { requiresAuth: true, role: 1 },
+  },
+  {
+    path: "/partylist",
+    name: "partylist",
+    component: PartyList,
     meta: { requiresAuth: true, role: 1 },
   },
   {

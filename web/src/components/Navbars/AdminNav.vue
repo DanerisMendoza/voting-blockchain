@@ -50,6 +50,7 @@ export default {
             items: [
                 { title: 'Dashboard', icon: 'mdi-view-dashboard', path: '/dashboard' },
                 { title: 'Positions', icon: 'mdi-account-group', path: '/positions' },
+                { title: 'Party Lists', icon: 'mdi-account-group', path: '/partylist' },
                 { title: 'List of Candidates', icon: 'mdi-format-list-group', path: '/candidates' },
                 { title: 'List of Voters', icon: 'mdi-format-list-checkbox', path: '/voterlist' },
             ],

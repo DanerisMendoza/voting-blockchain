@@ -41,8 +41,8 @@ export default {
             if (response.status == 200 || 201) {
               // commit("SET_POSITION_TITLE", response.data.position);
               // commit("SET_POSITIONS", response.data);
-              commit("SET_POSITION_DIALOG_VALUE", false);
-              commit("SET_POSITION_DIALOG_MODE", null);
+              // commit("SET_POSITION_DIALOG_VALUE", false);
+              // commit("SET_POSITION_DIALOG_MODE", null);
               resolve(response.data);
             }
           })

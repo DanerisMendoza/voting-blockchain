@@ -7,14 +7,14 @@
             <v-container>
                 <v-card tile>
                     <v-card-title>
-                        Positions
+                        Registered Party Lists
                         <v-spacer></v-spacer>
-                        <v-btn tile x-small color="primary" @click="addDialog">Add Position</v-btn>
+                        <v-btn tile x-small color="primary" @click="addPL">Add PartyList</v-btn>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
-                        <PositionsTable />
-                        <PositionsDialogVue />
+                        <PartyListTable />
+                        <PartyListDialog />
                     </v-card-text>
                 </v-card>
             </v-container>
@@ -23,24 +23,24 @@
 </template>
 
 <script>
-import AdminNav from "@/components/Navbars/AdminNav.vue"
-import PositionsTable from "@/components/Tables/PositionsDataTables.vue";
-import PositionsDialogVue from "@/components/Dialogs/PositionsDialog.vue";
+import PartyListDialog from "@/components/Dialogs/PartyListDialog.vue";
+import PartyListTable from "@/components/Tables/PartyListDataTables.vue";
+import AdminNav from "@/components/Navbars/AdminNav.vue";
 export default {
     data() {
         return {
         }
     },
     methods: {
-        addDialog() {
-            this.$store.commit('SET_POSITION_DIALOG_VALUE', true);
-            this.$store.commit('SET_POSITION_DIALOG_MODE', "Add");
+        addPL() {
+            this.$store.commit('SET_PL_DIALOG_VALUE', true);
+            this.$store.commit('SET_PL_DIALOG_MODE', 'Add');
         },
     },
     components: {
         AdminNav,
-        PositionsTable,
-        PositionsDialogVue
+        PartyListTable,
+        PartyListDialog
     }
 }
 </script>
