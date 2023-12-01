@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('posistion_id');
+            $table->integer('position_id');
+            $table->integer('partylist_id');
             $table->timestamps();
         });
     }

@@ -23,4 +23,5 @@ Route::middleware('auth:api')->group(function () {
     //PARTY LIST API
     Route::post('/AddPartyList', [PartyListController::class, 'AddPartyList']);
     Route::get('/GetPartyList', [PartyListController::class, 'GetPartyList']);
+    Route::post('/ViewPartyList', [PartyListController::class, 'ViewPartyList']);
 });
