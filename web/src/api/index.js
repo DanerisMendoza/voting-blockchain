@@ -13,9 +13,9 @@ instance.interceptors.request.use(
     request.headers.common["Accept"] = "Application/json";
     request.headers.common["Authorization"] =
       "Bearer " +
-      (sessionStorage.getItem("vb-token") == null
-        ? localStorage.getItem("vb-token")
-        : sessionStorage.getItem("vb-token"));
+      (sessionStorage.getItem("token") == null
+        ? localStorage.getItem("token")
+        : sessionStorage.getItem("token"));
     request.headers.common["Access-Control-Allow-Origin"] = "*";
     return request;
   },
