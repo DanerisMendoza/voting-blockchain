@@ -18,4 +18,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetCandidates', [CandidateController::class, 'GetCandidates']);
     //POSISTION API
     Route::get('/GetPositions', [PositionController::class, 'GetPositions']);
+    Route::post('/AddPosition', [PositionController::class, 'AddPosition']);
 });
