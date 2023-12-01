@@ -10,11 +10,6 @@
           </v-row>
           <v-row>
             <v-col>
-              <strong>Age:</strong> {{ USER_DETAILS.age }}
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
               <strong>Gender:</strong> {{ USER_DETAILS.gender }}
             </v-col>
           </v-row>
@@ -28,8 +23,6 @@
               <strong>Address:</strong> {{ USER_DETAILS.address }}
             </v-col>
           </v-row>
-    
-    
         </v-card-text>
       </v-card>
       <br><br>

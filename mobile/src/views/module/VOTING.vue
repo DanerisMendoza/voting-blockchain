@@ -91,8 +91,10 @@ export default {
             throw new Error('Invalid private key format');
           }
           const account = this.web3.eth.accounts.privateKeyToAccount(this.SETTINGS.private_key);
+          const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+          const currentDateTimestamp = Math.floor(new Date(currentDateInManila).getTime() / 1000);
           for (let i = 0; i < candidateIds.length; i++) {
-            await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i]).send({
+            await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i], currentDateTimestamp).send({
               from: account.address,
               gas: 2000000,
             }).then((response) => {

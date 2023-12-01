@@ -12,6 +12,7 @@ contract VotingSystem {
         address voterAddress;
         uint256 positionID;
         string positionName;
+        uint256 date; // New variable for the date
     }
 
     // Mapping from a unique identifier (e.g., vote ID) to its corresponding Vote
@@ -24,7 +25,8 @@ contract VotingSystem {
     event VoteCast(
         uint256 indexed voteID,
         uint256 indexed positionID,
-        address indexed voterAddress
+        address indexed voterAddress,
+        uint256 date
     );
 
     // Variable to track the total number of votes
@@ -49,7 +51,8 @@ contract VotingSystem {
         uint256 voterID,
         string memory voterName,
         uint256 positionID,
-        string memory positionName
+        string memory positionName,
+        uint256 date // New parameter for the date
     ) public {
         // Increment the voteIDCounter
         voteIDCounter++;
@@ -57,7 +60,7 @@ contract VotingSystem {
         // Use the incremented counter as the voteID
         uint256 voteID = voteIDCounter;
 
-        // Create a new Vote
+        // Create a new Vote with the provided date
         Vote memory newVote = Vote({
             voteID: voteID,
             candidateID: candidateID,
@@ -66,7 +69,8 @@ contract VotingSystem {
             voterName: voterName,
             voterAddress: msg.sender,
             positionID: positionID,
-            positionName: positionName
+            positionName: positionName,
+            date: date
         });
 
         // Store the vote in the mapping
@@ -79,7 +83,7 @@ contract VotingSystem {
         totalVotes++;
 
         // Emit an event to log the vote
-        emit VoteCast(voteID, positionID, msg.sender);
+        emit VoteCast(voteID, positionID, msg.sender, date);
     }
 
     // Function to get all vote IDs
@@ -111,7 +115,8 @@ contract VotingSystem {
                 voterName: vote.voterName,
                 voterAddress: vote.voterAddress,
                 positionID: positionID,
-                positionName: vote.positionName
+                positionName: vote.positionName,
+                date: vote.date
                 // Add other fields as needed
             });
 

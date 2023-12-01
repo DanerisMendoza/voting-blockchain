@@ -13,6 +13,7 @@
 import Web3 from 'web3';
 import VotingContract from '../../../../blockchain/build/contracts/VotingSystem.json';
 import { mapGetters } from "vuex";
+import moment from 'moment';
 
 export default {
     data() {
@@ -23,13 +24,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["SETTINGS","ELECTION"]),
+        ...mapGetters(["SETTINGS", "ELECTION"]),
     },
     methods: {
         async main() {
             await this.$store.dispatch('GetSettings')
-            await this.$store.dispatch('GetActiveElection').then(()=>{
-                console.log(this.ELECTION)
+            await this.$store.dispatch('GetActiveElection').then(() => {
+                console.log(this.ELECTION.start_voting_date)
+                console.log(this.ELECTION.end_voting_date)
             })
             try {
                 this.web3 = new Web3(this.SETTINGS.url);
@@ -38,7 +40,7 @@ export default {
                     VotingContract.networks['5777'].address
                 );
                 const votes = await this.contract.methods.getAllVotes().call();
-
+                console.log(votes)
                 // Create an object to store votes by position
                 const votesByPosition = votes.reduce((acc, vote) => {
                     const positionID = parseInt(vote.positionID, 10);
@@ -53,27 +55,41 @@ export default {
 
                     // If candidate doesn't exist in the position, initialize it
                     if (!acc[positionID].candidates[vote.candidateID]) {
+                        // Assuming vote.date is a BigInt value
+                        const dateBigInt = BigInt(vote.date)
+
+                        // Convert BigInt to number
+                        const dateNumber = Number(dateBigInt)
+
+                        // Convert Unix timestamp to milliseconds
+                        const dateMilliseconds = dateNumber * 1000
+
+                        // Use moment to format the date
+                        const formattedDate = moment(dateMilliseconds).format("MMMM D, YYYY - hh:mm A")
+
                         acc[positionID].candidates[vote.candidateID] = {
                             candidateName: vote.candidateName,
                             voteCount: 0,
-                            votes: [],
+                            voteID: parseInt(vote.voteID, 10),
+                            voterAddress: vote.voterAddress,
+                            voterID: parseInt(vote.voterID, 10),
+                            voterName: vote.voterName,
+                            date: formattedDate // Use the human-readable date
                         };
                     }
 
+
                     // Increment the vote count and add the vote to the candidate
                     acc[positionID].candidates[vote.candidateID].voteCount++;
-                    acc[positionID].candidates[vote.candidateID].votes.push({
-                        voteID: parseInt(vote.voteID, 10),
-                        voterAddress: vote.voterAddress,
-                        voterID: parseInt(vote.voterID, 10),
-                        voterName: vote.voterName,
-                    });
 
                     return acc;
                 }, {});
 
                 // Convert the votesByPosition object into an array
                 this.votesByPositionArray = Object.values(votesByPosition);
+                console.log(votesByPosition)
+                console.log(this.votesByPositionArray)
+
             } catch (error) {
                 console.error('Error in main:', error.message);
             }
