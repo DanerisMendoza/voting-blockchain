@@ -28,24 +28,37 @@ export default {
     },
     methods: {
         async main() {
-            await this.$store.dispatch('GetSettings')
-            await this.$store.dispatch('GetActiveElection').then(() => {
-                console.log(this.ELECTION.start_voting_date)
-                console.log(this.ELECTION.end_voting_date)
-            })
             try {
+                await this.$store.dispatch('GetSettings');
+                let date1 = null;
+                let date2 = null;
+
+                await this.$store.dispatch('GetActiveElection').then(() => {
+                    date1 = moment(this.ELECTION.start_voting_date).format('X');
+                    date2 = moment(this.ELECTION.end_voting_date).format('X');
+                });
+
+                // Format date1 and date2 before filtering
+                const formattedDate1 = moment(date1 * 1000).format('YYYY-MM-DD HH:mm:ss');
+                const formattedDate2 = moment(date2 * 1000).format('YYYY-MM-DD HH:mm:ss');
+
                 this.web3 = new Web3(this.SETTINGS.url);
                 this.contract = new this.web3.eth.Contract(
                     VotingContract.abi,
                     VotingContract.networks['5777'].address
                 );
+
                 const votes = await this.contract.methods.getAllVotes().call();
-                console.log(votes)
-                // Create an object to store votes by position
-                const votesByPosition = votes.reduce((acc, vote) => {
+
+                // Filter votes based on the formatted date range
+                const filteredVotes = votes.filter((vote) => {
+                    const voteDate = moment(parseInt(vote.date, 10) * 1000);
+                    return voteDate.isBetween(formattedDate1, formattedDate2, null, '[]');
+                });
+
+                const votesByPosition = filteredVotes.reduce((acc, vote) => {
                     const positionID = parseInt(vote.positionID, 10);
 
-                    // If position doesn't exist in the accumulator, initialize it
                     if (!acc[positionID]) {
                         acc[positionID] = {
                             positionName: vote.positionName,
@@ -53,19 +66,11 @@ export default {
                         };
                     }
 
-                    // If candidate doesn't exist in the position, initialize it
                     if (!acc[positionID].candidates[vote.candidateID]) {
-                        // Assuming vote.date is a BigInt value
-                        const dateBigInt = BigInt(vote.date)
-
-                        // Convert BigInt to number
-                        const dateNumber = Number(dateBigInt)
-
-                        // Convert Unix timestamp to milliseconds
-                        const dateMilliseconds = dateNumber * 1000
-
-                        // Use moment to format the date
-                        const formattedDate = moment(dateMilliseconds).format("MMMM D, YYYY - hh:mm A")
+                        const dateBigInt = BigInt(vote.date);
+                        const dateNumber = Number(dateBigInt);
+                        const dateMilliseconds = dateNumber * 1000;
+                        const formattedDate = moment(dateMilliseconds).format("MMMM D, YYYY - hh:mm A");
 
                         acc[positionID].candidates[vote.candidateID] = {
                             candidateName: vote.candidateName,
@@ -74,26 +79,22 @@ export default {
                             voterAddress: vote.voterAddress,
                             voterID: parseInt(vote.voterID, 10),
                             voterName: vote.voterName,
-                            date: formattedDate // Use the human-readable date
+                            date: formattedDate,
                         };
                     }
 
-
-                    // Increment the vote count and add the vote to the candidate
                     acc[positionID].candidates[vote.candidateID].voteCount++;
-
                     return acc;
                 }, {});
 
-                // Convert the votesByPosition object into an array
                 this.votesByPositionArray = Object.values(votesByPosition);
-                console.log(votesByPosition)
-                console.log(this.votesByPositionArray)
+                console.log(this.votesByPositionArray);
 
             } catch (error) {
                 console.error('Error in main:', error.message);
             }
         },
+
 
         getChartOptions(position) {
             const placeholderLabels = Array.from({ length: Object.keys(position.candidates).length }, (_, i) => ``);
