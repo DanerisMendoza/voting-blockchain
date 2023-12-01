@@ -5,7 +5,7 @@
                 <AdminNav />
             </v-col>
             <v-col cols="10">
-                <Calendar />
+                <!-- <Calendar /> -->
             </v-col>
         </v-row>
     </div>

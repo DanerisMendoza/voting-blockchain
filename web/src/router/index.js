@@ -20,71 +20,69 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  // Admin Routes
   {
     path: "/admin",
     name: "admin",
     component: AdminView,
     meta: { requiresAuth: true, role: 1 },
-    children: [
-      {
-        path: "/dashboard",
-        name: "dashboard",
-        component: Dashboard,
-        meta: { requiresAuth: true, role: 1 },
-      },
-      {
-        path: "/positions",
-        name: "positions",
-        component: Positions,
-        meta: { requiresAuth: true, role: 1 },
-      },
-      {
-        path: "/candidates",
-        name: "candidates",
-        component: Candidates,
-        meta: { requiresAuth: true, role: 1 },
-      },
-      {
-        path: "/voterlist",
-        name: "voterlist",
-        component: VoterList,
-        meta: { requiresAuth: true, role: 1 },
-      },
-    ],
   },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: Dashboard,
+    meta: { requiresAuth: true, role: 1 },
+  },
+  {
+    path: "/positions",
+    name: "positions",
+    component: Positions,
+    meta: { requiresAuth: true, role: 1 },
+  },
+  {
+    path: "/candidates",
+    name: "candidates",
+    component: Candidates,
+    meta: { requiresAuth: true, role: 1 },
+  },
+  {
+    path: "/voterlist",
+    name: "voterlist",
+    component: VoterList,
+    meta: { requiresAuth: true, role: 1 },
+  },
+  // Voters Routes
   {
     path: "/voters",
     name: "voters",
     component: VotersView,
     meta: { requiresAuth: true, role: 2 },
-    children: [
-      {
-        path: "/votersdashboard",
-        name: "votersdashboard",
-        component: VotersDashboard,
-        meta: { requiresAuth: true, role: 2 },
-      },
-      {
-        path: "/voting",
-        name: "voting",
-        component: Voting,
-        meta: { requiresAuth: true, role: 2 },
-      },
-      {
-        path: "/profile",
-        name: "profile",
-        component: Profile,
-        meta: { requiresAuth: true, role: 2 },
-      },
-      {
-        path: "/filing",
-        name: "filing",
-        component: Filing,
-        meta: { requiresAuth: true, role: 2 },
-      },
-    ],
   },
-
+  {
+    path: "/votersdashboard",
+    name: "votersdashboard",
+    component: VotersDashboard,
+    meta: { requiresAuth: true, role: 2 },
+  },
+  {
+    path: "/voting",
+    name: "voting",
+    component: Voting,
+    meta: { requiresAuth: true, role: 2 },
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
+    meta: { requiresAuth: true, role: 2 },
+  },
+  {
+    path: "/filing",
+    name: "filing",
+    component: Filing,
+    meta: { requiresAuth: true, role: 2 },
+  },
+  // Default Fall Back Route
   {
     path: "*",
     redirect: "/",

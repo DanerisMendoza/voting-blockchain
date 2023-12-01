@@ -20,7 +20,10 @@
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        <v-list-item-title>
+                            {{ item.title }}
+                            <!-- <router-link :to="item.path" exact link>{{ item.title }}</router-link> -->
+                        </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-divider></v-divider>

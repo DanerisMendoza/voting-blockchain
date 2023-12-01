@@ -1,10 +1,16 @@
 <template>
-    <div>
+    <v-row no-gutters>
+        <v-col cols="2">
+            <VotersNav />
+        </v-col>
+        <v-col cols="10">
 
-    </div>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
+import VotersNav from '@/components/Navbars/VotersNav.vue';
 export default {
     data() {
         return {
@@ -12,6 +18,9 @@ export default {
     },
     methods: {
     },
+    components: {
+        VotersNav
+    }
 
 }
 </script>
