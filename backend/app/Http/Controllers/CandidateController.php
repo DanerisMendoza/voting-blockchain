@@ -11,7 +11,7 @@ class CandidateController extends Controller
     {
         $userDetail = DB::table('candidates')
             ->join('users', 'users.id', 'candidates.user_id')
-            ->join('positions', 'positions.id', 'candidates.posistion_id')
+            ->join('positions', 'positions.id', 'candidates.position_id')
             ->where('positions.id',$request['selectedPositionID'])
             ->select(DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name) as candidate_name"), 'positions.name as position_name', 'candidates.id as candidate_id', 'positions.id as position_id')
             ->get();
