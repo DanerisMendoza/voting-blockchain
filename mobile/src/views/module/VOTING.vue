@@ -10,12 +10,20 @@
               <v-item>
                 <v-card :class="{ 'highlight-card': voteList.some(item2 => item2.candidate_id == item.candidate_id) }"
                   @click="selectCard(item)">
-                  <v-row>
-                    <v-col cols="12">
-                      <v-card-title>{{ item.candidate_name }}</v-card-title>
-                      <v-card-subtitle>Position: {{ item.position_name }}</v-card-subtitle>
-                    </v-col>
-                  </v-row>
+                  <center>
+                    <v-row>
+                      <v-col cols="12">
+                        <img :src="item.base64img" alt="Profile Picture" width="50" class="mr-2 profile-picture" />
+                        <v-card-subtitle>
+                          <strong>{{ item.candidate_name }}</strong>
+                          <br>
+                          Position: {{ item.position_name }}
+                          <br>
+                          Partylist: {{ item.party_list }}
+                        </v-card-subtitle>
+                      </v-col>
+                    </v-row>
+                  </center>
                 </v-card>
               </v-item>
             </v-col>
@@ -46,7 +54,7 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS","SETTINGS"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS"]),
   },
   watch: {
     selected_position: {
@@ -163,7 +171,9 @@ export default {
           selectedPositionID: this.selected_position
         }
       }
-      this.$store.dispatch('GetCandidates', payload)
+      this.$store.dispatch('GetCandidates', payload).then(() => {
+        console.log(this.CANDIDATES)
+      })
     },
     selectCard(item) {
       if (this.voteList.some(item2 => item2.position_name === item.position_name)) {

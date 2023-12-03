@@ -5,6 +5,11 @@
         <v-card-text>
           <v-row>
             <v-col>
+              <img :src="USER_DETAILS.base64img" alt="Profile Picture" width="150" class="mr-2 profile-picture" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <strong>Name:</strong> {{ USER_DETAILS.name }}
             </v-col>
           </v-row>
