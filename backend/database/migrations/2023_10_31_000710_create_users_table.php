@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('username');
             $table->string('password');
             $table->string('first_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
+            $table->string('suffix')->nullable();
+            $table->tinyInteger('user_role')->default(2);
             $table->string('email');
             $table->string('gender');
             $table->string('profile_pic_path')->nullable();

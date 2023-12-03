@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Passport\Client;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,19 @@ class UserController extends Controller
         ]);
         $login = DB::table('users')
             ->where('username', $request->username)
-            ->select('users.password', 'users.username')
+            ->select('users.password', 'users.username', 'users.user_role')
             ->first();
+
+        if ($login) {
+            $userrole = $login->user_role;
+        } else {
+            return response()->json(
+                [
+                    'message' => 'Please Check the Username or Password.',
+                    'icon' => 'error'
+                ]
+            );
+        }
 
         if ($login) {
             if (Hash::check($request->password, $login->password)) {
@@ -29,6 +41,7 @@ class UserController extends Controller
                     'client_id'     => $passwordGrantClient->id,
                     'client_secret' => $passwordGrantClient->secret,
                     'username'      => $request->username,
+                    'user_role'      => $userrole,
                     'password'      => $request->password,
                     'scope'         => '*',
                 ];
@@ -38,22 +51,26 @@ class UserController extends Controller
                     $data = json_decode($response->getContent());
                     $token = $data->access_token;
                     $responseContent = [
-                        'message' => 'success',
+                        'message' => 'Login Successfully!',
+                        'icon' => 'success',
                         'token' => $token,
+                        'user_role' => $userrole,
                     ];
                     return response()->json($responseContent, 200);
                 }
             } else {
                 return response()->json(
                     [
-                        'message' => 'The password were incorrect'
+                        'message' => 'The password were incorrect',
+                        'icon' => 'error'
                     ],
                 );
             }
         } else {
             return response()->json(
                 [
-                    'message' => 'The username were incorrect'
+                    'message' => 'The username were incorrect',
+                    'icon' => 'error'
                 ],
             );
         }
@@ -84,5 +101,27 @@ class UserController extends Controller
         $user = $request->user();
         $user->token()->revoke();
         return ['message' => 'success'];
+    }
+
+    public function Register(Request $request)
+    {
+        $pass = Hash::make($request->password);
+        // Create a new user
+        $newVoter = new User();
+        $newVoter->first_name = $request->firstname;
+        $newVoter->middle_name = $request->midname;
+        $newVoter->last_name = $request->lastname;
+        $newVoter->user_role = 2;
+        $newVoter->suffix = $request->suffix;
+        $newVoter->email = $request->email;
+        $newVoter->age = $request->age;
+        $newVoter->address = $request->address;
+        $newVoter->gender = $request->gender;
+        $newVoter->username = $request->username;
+        $newVoter->password = $pass;
+        // Save the user to the database
+        $newVoter->save();
+        // return $newVoter;
+        return response()->json(['message' => 'Successfully Registered'], 200);
     }
 }
