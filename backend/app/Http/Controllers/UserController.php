@@ -90,9 +90,20 @@ class UserController extends Controller
                 'users.first_name',
                 'users.middle_name',
                 'users.last_name',
-                DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name) as name")
+                DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name) as name"),
+                'users.profile_pic_path'
             )
             ->first();
+        if ($userDetail->profile_pic_path != null) {
+            $image_type = substr($userDetail->profile_pic_path, -3);
+            $image_format = '';
+            if ($image_type == 'png' || $image_type == 'jpg') {
+                $image_format = $image_type;
+            }
+            $base64str = '';
+            $base64str = base64_encode(file_get_contents(public_path($userDetail->profile_pic_path)));
+            $userDetail->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+        }
         return $userDetail;
     }
 
