@@ -20,6 +20,7 @@ class UserFactory extends Factory
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
             'gender' => $this->faker->randomElement(['male', 'female']),
+            'profile_pic_path' => '/ProfilePic/avatar'.$this->faker->randomElement(['1', '2','3','4']),
             'address' => $this->faker->address(),
             'age' => $this->faker->randomElement([20, 21, 22]),
             'email' => $this->faker->unique()->safeEmail(),
