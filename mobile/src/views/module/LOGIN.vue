@@ -71,7 +71,7 @@ export default {
                     password: this.password,
                 };
                 this.$store.dispatch("LOGIN", payload).then((response) => {
-                    if (response.message === "success") {
+                    if (response.message === "Login Successfully!") {
                         if (this.rememberMe) {
                             localStorage.setItem("vb-token", response.token);
                         }
