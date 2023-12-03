@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/authenticate', [UserController::class, 'authenticate']);
     Route::get('/GetUserDetails', [UserController::class, 'GetUserDetails']);
     Route::post('/Logout', [UserController::class, 'Logout']);
+    Route::patch('/UpdateLastVoteDate', [UserController::class, 'UpdateLastVoteDate']);
     //CANDIDATE API
     Route::get('/GetCandidates', [CandidateController::class, 'GetCandidates']);
     //POSISTION API

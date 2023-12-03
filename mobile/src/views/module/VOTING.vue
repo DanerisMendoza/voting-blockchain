@@ -109,6 +109,7 @@ export default {
               console.log(response)
             });
           }
+          this.$store.dispatch("UPDATE_LAST_VOTE_DATE")
         } catch (error) {
           this.textareaValue = error
           console.error('Error voting:', error.message);
@@ -171,9 +172,7 @@ export default {
           selectedPositionID: this.selected_position
         }
       }
-      this.$store.dispatch('GetCandidates', payload).then(() => {
-        console.log(this.CANDIDATES)
-      })
+      this.$store.dispatch('GetCandidates', payload)
     },
     selectCard(item) {
       if (this.voteList.some(item2 => item2.position_name === item.position_name)) {

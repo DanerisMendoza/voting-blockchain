@@ -90,6 +90,7 @@ class UserController extends Controller
                 'users.first_name',
                 'users.middle_name',
                 'users.last_name',
+                'LastVoteDate',
                 DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name) as name"),
                 'users.profile_pic_path'
             )
@@ -134,5 +135,11 @@ class UserController extends Controller
         $newVoter->save();
         // return $newVoter;
         return response()->json(['message' => 'Successfully Registered'], 200);
+    }
+
+    public function UpdateLastVoteDate(){
+        $User = User::find(Auth::user()->id);
+        $User->LastVoteDate = now();
+        $User->save();
     }
 }

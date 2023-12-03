@@ -48,6 +48,15 @@ export default {
         });
       })
     },
+    UPDATE_LAST_VOTE_DATE({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        api.patch('api/UpdateLastVoteDate', payload).then((response) => {
+          resolve(response.data)
+        }).catch((error) => {
+          reject(error)
+        });
+      })
+    },
 
   }
 }
