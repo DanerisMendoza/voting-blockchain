@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('profile_pic_path')->nullable();
             $table->string('address');
             $table->integer('age');
+            $table->date('LastVoteDate')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
