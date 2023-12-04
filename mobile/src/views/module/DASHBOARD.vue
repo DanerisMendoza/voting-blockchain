@@ -161,7 +161,7 @@ export default {
         },
     },
     mounted() {
-        // this.GetVotes();
+        this.GetVotes();
     },
 };
 </script>
