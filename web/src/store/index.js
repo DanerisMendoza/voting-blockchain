@@ -4,6 +4,7 @@ import loginstore from "@/store/Login/loginstore";
 import registerstore from "@/store/Login/registerstore";
 import positionstore from "./Positions/positionstore";
 import partyliststore from "./PartyList/partyliststore";
+import candidatestore from "./Candidates/candidatestore";
 
 Vue.use(Vuex);
 
@@ -14,5 +15,6 @@ export default new Vuex.Store({
     registerstore,
     positionstore,
     partyliststore,
+    candidatestore,
   },
 });
