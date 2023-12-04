@@ -1,13 +1,29 @@
 <template>
     <v-app>
-        <div v-for="(position, index) in votesByPositionArray" :key="index">
-            <v-card>
-                <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
-            </v-card>
-            <br>
+        <!-- ELECTION IS FINISH -->
+        <div v-if="!IS_ELECTION && isVotingFinish">
+            <div v-for="(position, index) in votesByPositionArray" :key="index">
+                <v-card>
+                    <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
+                </v-card>
+                <br>
+            </div>
         </div>
+        <!-- NOT YET ELECTION -->
+        <v-card v-else-if="!IS_ELECTION && !isVotingFinish" class="pl-2 pt-2">
+            <p>No election is currently active.</p>
+            <p>Start of Filing: <strong>{{ date1 }}</strong></p>
+            <p>End of Filing: <strong>{{ date2 }}</strong></p>
+            <p>Start of Election: <strong>{{ date3 }}</strong></p>
+            <p>End of Election: <strong>{{ date4 }}</strong></p>
+        </v-card>
+        <!-- VOTING IN PROGRESS -->
+        <v-card v-else class="pl-2 pt-2">
+            <p>Voting in Progress</p>
+        </v-card>
     </v-app>
 </template>
+
   
 <script>
 import Web3 from 'web3';
@@ -21,22 +37,41 @@ export default {
             web3: null,
             contract: null,
             votesByPositionArray: [],
+            date1: null,
+            date2: null,
+            date3: null,
+            date4: null,
+            isVotingFinish: null,
         };
     },
     computed: {
-        ...mapGetters(["SETTINGS", "ELECTION"]),
+        ...mapGetters(["SETTINGS", "ELECTION", "IS_ELECTION"]),
     },
     methods: {
-        async main() {
+        checkData(data) {
+            console.log(data)
+        },
+        async GetVotes() {
             try {
                 await this.$store.dispatch('GetSettings');
-                let date1 = null;
-                let date2 = null;
-
+                await this.$store.dispatch('IsElection')
+                let date1 = null
+                let date2 = null
                 await this.$store.dispatch('GetActiveElection').then(() => {
+                    this.date1 = moment(this.ELECTION.start_filing_date).format("MMMM D, YYYY A");
+                    this.date2 = moment(this.ELECTION.end_filing_date).format("MMMM D, YYYY A");
+                    this.date3 = moment(this.ELECTION.start_voting_date).format("MMMM D, YYYY A");
+                    this.date4 = moment(this.ELECTION.end_voting_date).format("MMMM D, YYYY A");
                     date1 = moment(this.ELECTION.start_voting_date).format('X');
                     date2 = moment(this.ELECTION.end_voting_date).format('X');
+                    const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+                    const currentDate = new Date(currentDateInManila);
+                    const endVotingDate = new Date(this.ELECTION.end_voting_date);
+                    if (currentDate > endVotingDate) {
+                        this.isVotingFinish = true;
+                    }
                 });
+
 
                 // Format date1 and date2 before filtering
                 const formattedDate1 = moment(date1 * 1000).format('YYYY-MM-DD HH:mm:ss');
@@ -88,7 +123,6 @@ export default {
                 }, {});
 
                 this.votesByPositionArray = Object.values(votesByPosition);
-                console.log(this.votesByPositionArray);
 
             } catch (error) {
                 console.error('Error in main:', error.message);
@@ -126,8 +160,8 @@ export default {
             return a
         },
     },
-    created() {
-        this.main();
+    mounted() {
+        // this.GetVotes();
     },
 };
 </script>

@@ -72,7 +72,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('GetUserDetails').then(()=>{
-      // console.log(this.USER_DETAILS)
+      console.log(this.USER_DETAILS)
     })
   }
 };

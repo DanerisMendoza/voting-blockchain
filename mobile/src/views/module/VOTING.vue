@@ -1,6 +1,14 @@
 <template>
   <v-app>
-    <v-item-group active-class="primary">
+    <v-card v-if="!IS_ELECTION && isVotingFinish">
+      <p>Election is Finished</p>
+    </v-card>
+
+    <v-card v-else-if="!IS_ELECTION && !isVotingFinish">
+      <p>No election is currently active.</p>
+    </v-card>
+
+    <v-item-group active-class="primary" v-else>
       <v-autocomplete v-model="selected_position" :items="POSITIONS" item-text="name" item-value="id" auto-select-first
         chips label="POSISTION"></v-autocomplete>
       <v-row>
@@ -43,6 +51,13 @@
         </v-col>
       </v-row>
     </v-item-group>
+    <v-card v-else="!IS_ELECTION" class="pl-2 pt-2">
+      <p>No election is currently active.</p>
+      <p>Start of Filing: <strong>{{ date1 }}</strong></p>
+      <p>End of Filing: <strong>{{ date2 }}</strong></p>
+      <p>Start of Election: <strong>{{ date3 }}</strong></p>
+      <p>End of Election: <strong>{{ date4 }}</strong></p>
+    </v-card>
   </v-app>
 </template>
 
@@ -51,10 +66,11 @@
 import Web3 from 'web3';
 import VotingContract from '../../../../blockchain/build/contracts/VotingSystem.json';
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "IS_ELECTION"]),
   },
   watch: {
     selected_position: {
@@ -76,6 +92,11 @@ export default {
       account: '',
       selectedCandidate: null,
       selected_position: 1,
+      date1: null,
+      date2: null,
+      date3: null,
+      date4: null,
+      isVotingFinish: null,
     };
   },
 
@@ -137,7 +158,20 @@ export default {
     },
 
     async main() {
+
       await this.$store.dispatch('GetSettings')
+      await this.$store.dispatch('GetActiveElection').then(() => {
+        this.date1 = moment(this.ELECTION.start_filing_date).format("MMMM D, YYYY A");
+        this.date2 = moment(this.ELECTION.end_filing_date).format("MMMM D, YYYY A");
+        this.date3 = moment(this.ELECTION.start_voting_date).format("MMMM D, YYYY A");
+        this.date4 = moment(this.ELECTION.end_voting_date).format("MMMM D, YYYY A");
+        const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+        const currentDate = new Date(currentDateInManila);
+        const endVotingDate = new Date(this.ELECTION.end_voting_date);
+        if (currentDate > endVotingDate) {
+          this.isVotingFinish = true;
+        }
+      });
       try {
         this.web3 = new Web3(this.SETTINGS.url);
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
