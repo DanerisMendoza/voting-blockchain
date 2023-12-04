@@ -25,6 +25,7 @@ Route::middleware('auth:api')->group(function () {
     //SETTINGS API
     Route::get('/GetSettings', [SettingsController::class, 'GetSettings']);
     //ELECTION API
+    Route::get('/isElection', [ElectionController::class, 'isElection']);
     Route::get('/GetActiveElection', [ElectionController::class, 'GetActiveElection']);
     Route::post('/AddPosition', [PositionController::class, 'AddPosition']);
     //PARTY LIST API
