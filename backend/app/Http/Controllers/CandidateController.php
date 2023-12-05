@@ -16,7 +16,7 @@ class CandidateController extends Controller
             ->join('positions', 'positions.id', 'candidates.position_id')
             ->join('partylists', 'partylists.id', 'candidates.partylist_id')
             ->where('positions.id', $request['selectedPositionID'])
-            ->select(DB::raw("CONCAT(users.first_name, ' ', users.middle_name, ' ', users.last_name, users.suffix) as candidate_name"), 'positions.name as position_name', 'candidates.id as candidate_id', 'positions.id as position_id', 'partylists.name as party_list', 'users.profile_pic_path')
+            ->select(DB::raw("CONCAT_WS(' ',users.first_name, users.middle_name, users.last_name, users.suffix) as candidate_name"), 'positions.name as position_name', 'candidates.id as candidate_id', 'positions.id as position_id', 'partylists.name as party_list', 'users.profile_pic_path')
             ->get()
             ->each(function ($q) {
                 if ($q->profile_pic_path != null) {
