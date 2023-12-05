@@ -1,11 +1,22 @@
 <template>
     <v-app>
-        <div v-for="(position, index) in votesByPositionArray" :key="index">
-            <v-card>
-                <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
-            </v-card>
-            <br>
+        <div v-if="election == 'ongoing'"> 
+           <v-card>
+            <p>Election is ongoing</p>
+           </v-card>
         </div>
+        <v-card v-else-if="election == 'finished'">
+            <p>Election is Finish</p>
+            <div v-for="(position, index) in votesByPositionArray" :key="index">
+                <v-card>
+                    <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
+                </v-card>
+                <br>
+            </div>
+        </v-card>
+        <v-card v-else-if="election == 'closed'">
+            <p>Election is Closed</p>
+        </v-card>
     </v-app>
 </template>
   
@@ -21,10 +32,14 @@ export default {
             web3: null,
             contract: null,
             votesByPositionArray: [],
+            election: 'null',
         };
     },
     computed: {
         ...mapGetters(["SETTINGS", "ELECTION"]),
+        electionComputed(){
+            return this.election
+        }
     },
     methods: {
         async main() {
@@ -34,8 +49,19 @@ export default {
                 let date2 = null;
 
                 await this.$store.dispatch('GetActiveElection').then(() => {
-                    date1 = moment(this.ELECTION.start_voting_date).format('X');
-                    date2 = moment(this.ELECTION.end_voting_date).format('X');
+                    date1 = moment(this.ELECTION.start_voting_date, 'YYYY-MM-DDTHH:mm:ss').format('X');
+                    date2 = moment(this.ELECTION.end_voting_date, 'YYYY-MM-DDTHH:mm:ss').format('X');
+                    const now = moment(new Date()).format('X');
+                    if (date1 <= now && now <= date2) {
+                        this.election = 'ongoing'
+                    } else {
+                        if (now > date2) {
+                            this.election = 'finished';
+                        } else {
+                            this.election = 'closed';
+                        }
+                    }
+                    console.log(this.election)
                 });
 
                 // Format date1 and date2 before filtering
@@ -88,7 +114,7 @@ export default {
                 }, {});
 
                 this.votesByPositionArray = Object.values(votesByPosition);
-                console.log(this.votesByPositionArray);
+                // console.log(this.votesByPositionArray);
 
             } catch (error) {
                 console.error('Error in main:', error.message);
