@@ -1,24 +1,25 @@
 <template>
     <v-app class="parent">
         <v-container fluid class="login-card">
-            <div>
-                <img src="../../assets/bg.png" alt="ADAMSON Logo" width="100" />
-            </div>
+            <center>
+                <div>
+                    <img src="../../assets/bg.png"  width="300" />
+                </div>
+            </center>
             <v-row align="center">
                 <v-col cols="12" sm="8" md="6" lg="4">
                     <v-form ref="myForm" @submit.prevent="login">
-                        <v-text-field v-model="username" :rules="rules.required" outlined dense
-                            label="Username"></v-text-field>
-                        <v-text-field v-model="password" type="password" :rules="rules.required" outlined dense
-                            label="Password"></v-text-field>
-                        <v-row>
-                            <v-col cols="6">
-                                <v-checkbox v-model="rememberMe" label="Remember me" class="mt-2" dense></v-checkbox>
-                            </v-col>
-                            <v-col cols="6">
-                                <v-btn type="submit" color="#002147" dense dark>Sign in</v-btn>
-                            </v-col>
-                        </v-row>
+                        <center>
+                            <v-text-field v-model="username" :rules="rules.required" outlined dense
+                                label="Username"></v-text-field>
+                            <v-text-field v-model="password" type="password" :rules="rules.required" outlined dense
+                                label="Password"></v-text-field>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-btn type="submit" color="#002147" dense dark>Sign in</v-btn>
+                                </v-col>
+                            </v-row>
+                        </center>
                     </v-form>
                 </v-col>
             </v-row>
@@ -112,13 +113,10 @@ export default {
 .login-card {
     width: 25rem;
     border-radius: 0;
-    padding: 1rem 1rem 0;
     position: absolute;
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 3px solid gray;
-    background: gainsboro;
 }
 
 .login-btn {
@@ -128,7 +126,8 @@ export default {
 .card-txt {
     font-size: 1rem;
 }
-.parent{
+
+.parent {
     background: ghostwhite;
 }
 </style>

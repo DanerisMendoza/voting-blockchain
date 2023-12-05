@@ -1,10 +1,15 @@
 <template>
     <v-app>
-        <div v-for="(position, index) in votesByPositionArray" :key="index">
-            <v-card>
-                <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
-            </v-card>
-            <br>
+        <v-card class="pl-2 pt-2">
+            <p>ELECTION STATUS: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
+        </v-card>
+        <div v-if="ELECTION_STATUS == 'finished'">
+            <div v-for="(position, index) in votesByPositionArray" :key="index">
+                <v-card>
+                    <apexchart :type="'bar'" :options="getChartOptions(position)" :series="getChartSeries(position)" />
+                </v-card>
+                <br>
+            </div>
         </div>
     </v-app>
 </template>
@@ -24,7 +29,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["SETTINGS", "ELECTION"]),
+        ...mapGetters(["SETTINGS", "ELECTION","ELECTION_STATUS"]),
     },
     methods: {
         async main() {
@@ -32,6 +37,10 @@ export default {
                 await this.$store.dispatch('GetSettings');
                 let date1 = null;
                 let date2 = null;
+
+                this.$store.dispatch('GetElectionStatus').then(()=>{
+                    console.log(this.ELECTION_STATUS)
+                })
 
                 await this.$store.dispatch('GetActiveElection').then(() => {
                     date1 = moment(this.ELECTION.start_voting_date).format('X');

@@ -15,20 +15,27 @@ class ElectionController extends Controller
         return $result;
     }
 
-    public function isElection()
+    public function GetElectionStatus()
     {
         date_default_timezone_set('Asia/Manila');
-        $dateNow = now();
+        $now = now();
     
         $result = DB::table('elections')
             ->where('isActive', true)
-            ->whereDate('start_voting_date', '<=', $dateNow)
-            ->whereDate('end_voting_date', '>=', $dateNow)
             ->first();
-        if ($result) {
-            return 'true';
+    
+        $startVotingDate = \Carbon\Carbon::parse($result->start_voting_date);
+        $endVotingDate = \Carbon\Carbon::parse($result->end_voting_date);
+    
+        if ($startVotingDate <= $now && $now <= $endVotingDate) {
+            return $electionStatus = 'ongoing';
         } else {
-            return 'false';
+            if ($now > $endVotingDate) {
+                return $electionStatus = 'finished';
+            } else {
+                return $electionStatus = 'closed';
+            }
         }
     }
+    
 }
