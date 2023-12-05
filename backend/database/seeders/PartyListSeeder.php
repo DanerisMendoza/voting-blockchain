@@ -14,6 +14,9 @@ class PartyListSeeder extends Seeder
     public function run(): void
     {
         $PartyList = new PartyList();
+        $PartyList->name = 'Independent';
+        $PartyList->save();
+        $PartyList = new PartyList();
         $PartyList->name = 'Party-List-A';
         $PartyList->save();
         $PartyList = new PartyList();
@@ -22,6 +25,5 @@ class PartyListSeeder extends Seeder
         $PartyList = new PartyList();
         $PartyList->name = 'Party-List-C';
         $PartyList->save();
-
     }
 }
