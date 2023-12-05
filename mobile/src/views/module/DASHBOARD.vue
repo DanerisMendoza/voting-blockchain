@@ -1,7 +1,13 @@
 <template>
     <v-app>
-        <v-card class="pl-2 pt-2">
+        <v-card class="pl-2 pt-2 pt-2">
             <p>ELECTION STATUS: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
+            <div v-if="ELECTION_STATUS == 'closed'">
+                <p>Filing Start: <strong>{{ formattedDate(ELECTION.start_filing_date) }}</strong></p>
+                <p>Filing End: <strong>{{ formattedDate(ELECTION.end_filing_date) }}</strong></p>
+                <p>Election Start: <strong>{{ formattedDate(ELECTION.start_voting_date) }}</strong></p>
+                <p>Election End: <strong>{{ formattedDate(ELECTION.end_voting_date) }}</strong></p>
+            </div>
         </v-card>
         <div v-if="ELECTION_STATUS == 'finished'">
             <div v-for="(position, index) in votesByPositionArray" :key="index">
@@ -29,18 +35,19 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["SETTINGS", "ELECTION","ELECTION_STATUS"]),
+        ...mapGetters(["SETTINGS", "ELECTION", "ELECTION_STATUS"]),
     },
     methods: {
+        formattedDate(data) {
+            return moment(data).format("MMMM D, YYYY - hh:mm A");
+        },
         async main() {
             try {
                 await this.$store.dispatch('GetSettings');
                 let date1 = null;
                 let date2 = null;
 
-                this.$store.dispatch('GetElectionStatus').then(()=>{
-                    console.log(this.ELECTION_STATUS)
-                })
+                this.$store.dispatch('GetElectionStatus')
 
                 await this.$store.dispatch('GetActiveElection').then(() => {
                     date1 = moment(this.ELECTION.start_voting_date).format('X');

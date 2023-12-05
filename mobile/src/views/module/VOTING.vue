@@ -1,6 +1,15 @@
 <template>
   <v-app>
-    <v-item-group active-class="primary">
+    <v-card class="pl-2 pt-2 pt-2" v-if="ELECTION_STATUS != 'ongoing'">
+      <p>ELECTION STATUS: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
+      <div v-if="ELECTION_STATUS == 'closed'">
+        <p>Filing Start: <strong>{{ formattedDate(ELECTION.start_filing_date) }}</strong></p>
+        <p>Filing End: <strong>{{ formattedDate(ELECTION.end_filing_date) }}</strong></p>
+        <p>Election Start: <strong>{{ formattedDate(ELECTION.start_voting_date) }}</strong></p>
+        <p>Election End: <strong>{{ formattedDate(ELECTION.end_voting_date) }}</strong></p>
+      </div>
+    </v-card>
+    <v-item-group active-class="primary" v-if="ELECTION_STATUS == 'ongoing'">
       <v-autocomplete v-model="selected_position" :items="POSITIONS" item-text="name" item-value="id" auto-select-first
         chips label="POSISTION"></v-autocomplete>
       <v-row>
@@ -51,10 +60,11 @@
 import Web3 from 'web3';
 import VotingContract from '../../../../blockchain/build/contracts/VotingSystem.json';
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "ELECTION_STATUS"]),
   },
   watch: {
     selected_position: {
@@ -80,6 +90,9 @@ export default {
   },
 
   methods: {
+    formattedDate(data) {
+      return moment(data).format("MMMM D, YYYY - hh:mm A");
+    },
     async submit() {
       if (this.voteList.length != this.POSITIONS.length) {
         this.$swal.fire({
@@ -138,6 +151,9 @@ export default {
 
     async main() {
       await this.$store.dispatch('GetSettings')
+      await this.$store.dispatch('GetActiveElection')
+      await this.$store.dispatch('GetElectionStatus')
+
       try {
         this.web3 = new Web3(this.SETTINGS.url);
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
