@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Election;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,14 +20,14 @@ class ElectionController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         $now = now();
-    
+
         $result = DB::table('elections')
             ->where('isActive', true)
             ->first();
-    
+
         $startVotingDate = \Carbon\Carbon::parse($result->start_voting_date);
         $endVotingDate = \Carbon\Carbon::parse($result->end_voting_date);
-    
+
         if ($startVotingDate <= $now && $now <= $endVotingDate) {
             return 'ongoing';
         } else {
@@ -37,5 +38,23 @@ class ElectionController extends Controller
             }
         }
     }
-    
+
+    public function AddSchedule(Request $request)
+    {
+        $sched = new Election();
+        $sched->isActive = 1;
+        $sched->start_filing_date = $request->sf_start;
+        $sched->end_filing_date = $request->sf_end;
+        $sched->start_voting_date = $request->sv_start;
+        $sched->end_voting_date = $request->sv_start;
+        $sched->save();
+
+        return response()->json(
+            [
+                'message' => 'Adding of Voting Schedules Success',
+                'icon' => 'success',
+            ],
+            200
+        );
+    }
 }

@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/GetElectionStatus', [ElectionController::class, 'GetElectionStatus']);
     Route::get('/GetActiveElection', [ElectionController::class, 'GetActiveElection']);
     Route::post('/AddPosition', [PositionController::class, 'AddPosition']);
+    Route::post('/AddSchedule', [ElectionController::class, 'AddSchedule']);
     //PARTY LIST API
     Route::post('/AddPartyList', [PartyListController::class, 'AddPartyList']);
     Route::get('/GetPartyList', [PartyListController::class, 'GetPartyList']);
