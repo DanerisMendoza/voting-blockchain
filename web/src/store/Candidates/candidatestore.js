@@ -4,11 +4,13 @@ export default {
   state: {
     candidates: [],
     application: {},
+    forvotingcandidates: [],
   },
 
   getters: {
     GET_CANDIDATES: (state) => state.candidates,
     GET_APPLICATION: (state) => state.application,
+    GET_V_CANDIDATES: (state) => state.forvotingcandidates,
   },
 
   mutations: {
@@ -17,6 +19,9 @@ export default {
     },
     SET_APPLICATION: (state, data) => {
       state.application = data;
+    },
+    SET_V_CANDIDATES: (state, data) => {
+      state.forvotingcandidates = data;
     },
   },
 
@@ -74,6 +79,22 @@ export default {
           .delete("api/CancelApplication")
           .then((response) => {
             if (response.status == 200) {
+              resolve(response.data);
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
+    GetCandidates({ commit }, payload) {
+      return new Promise((resolve, reject) => {
+        api
+          .get("api/GetCandidates", payload)
+          .then((response) => {
+            if (response.status == 200) {
+              commit("SET_V_CANDIDATES", response.data);
               resolve(response.data);
             }
           })
