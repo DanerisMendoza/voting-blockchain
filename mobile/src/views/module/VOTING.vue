@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-card class="pl-2 pt-2 pt-2" v-if="ELECTION_STATUS != 'ongoing'">
-      <p>ELECTION STATUS: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
+      <p>Election Status: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
       <div v-if="ELECTION_STATUS == 'closed'">
         <p>Filing Start: <strong>{{ formattedDate(ELECTION.start_filing_date) }}</strong></p>
         <p>Filing End: <strong>{{ formattedDate(ELECTION.end_filing_date) }}</strong></p>
@@ -9,7 +9,7 @@
         <p>Election End: <strong>{{ formattedDate(ELECTION.end_voting_date) }}</strong></p>
       </div>
     </v-card>
-    <v-item-group active-class="primary" v-if="ELECTION_STATUS == 'ongoing'">
+    <v-item-group active-class="primary" v-if="ELECTION_STATUS == 'ongoing' && IS_VOTED == false">
       <v-autocomplete v-model="selected_position" :items="POSITIONS" item-text="name" item-value="id" auto-select-first
         chips label="POSISTION"></v-autocomplete>
       <v-row>
@@ -52,6 +52,9 @@
         </v-col>
       </v-row>
     </v-item-group>
+    <v-card v-if="IS_VOTED" class="pl-2 pt-2 pt-2" >
+      <p>User Status: <strong style="text-transform: uppercase;">Already Voted</strong></p>
+    </v-card>
   </v-app>
 </template>
 
@@ -64,7 +67,7 @@ import moment from 'moment';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "ELECTION_STATUS"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "ELECTION_STATUS","IS_VOTED"]),
   },
   watch: {
     selected_position: {
@@ -122,7 +125,8 @@ export default {
               console.log(response)
             });
           }
-          this.$store.dispatch("UPDATE_LAST_VOTE_DATE")
+          await this.$store.dispatch("UPDATE_LAST_VOTE_DATE")
+          await this.$store.dispatch('IsVoted')
         } catch (error) {
           this.textareaValue = error
           console.error('Error voting:', error.message);
@@ -150,10 +154,10 @@ export default {
     },
 
     async main() {
-      await this.$store.dispatch('GetSettings')
-      await this.$store.dispatch('GetActiveElection')
+      await this.$store.dispatch('IsVoted')
       await this.$store.dispatch('GetElectionStatus')
-
+      await this.$store.dispatch('GetActiveElection')
+      await this.$store.dispatch('GetSettings')
       try {
         this.web3 = new Web3(this.SETTINGS.url);
         this.contract = new this.web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);

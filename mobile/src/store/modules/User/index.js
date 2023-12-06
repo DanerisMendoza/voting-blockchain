@@ -4,22 +4,35 @@ export default {
   state: {
     SIDE_NAV: [],
     USERS: [],
-    USER_DETAILS: { name: null }
+    USER_DETAILS: { name: null },
+    IS_VOTED: null,
   },
 
   getters: {
     SIDE_NAV: (state) => state.SIDE_NAV,
     USER_DETAILS: (state) => state.USER_DETAILS,
     USERS: (state) => state.USERS,
+    IS_VOTED: (state) => state.IS_VOTED,
   },
 
   mutations: {
     SIDE_NAV: (state, data) => { state.SIDE_NAV = data },
     USER_DETAILS: (state, data) => { state.USER_DETAILS = data },
     USERS: (state, data) => { state.USERS = data },
+    IS_VOTED: (state, data) => { state.IS_VOTED = data },
   },
 
   actions: {
+    IsVoted({ commit }) {
+      return new Promise((resolve, reject) => {
+        api.get('api/IsVoted').then((response) => {
+          commit('IS_VOTED', response.data)
+          resolve(response.data)
+        }).catch((error) => {
+          reject(error)
+        });
+      })
+    },
     GetUserDetails({ commit }) {
       return new Promise((resolve, reject) => {
         api.get('api/GetUserDetails').then((response) => {

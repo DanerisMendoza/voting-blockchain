@@ -2,30 +2,29 @@
     <v-app class="parent">
         <v-container fluid class="login-card">
             <center>
-                <div>
-                    <img src="../../assets/bg.png"  width="300" />
-                </div>
+                <img src="../../assets/logo3.png" width="300" />
             </center>
-            <v-row align="center">
-                <v-col cols="12" sm="8" md="6" lg="4">
+            <v-row>
+                <v-col cols="12" lg="10">
                     <v-form ref="myForm" @submit.prevent="login">
-                        <center>
-                            <v-text-field v-model="username" :rules="rules.required" outlined dense
-                                label="Username"></v-text-field>
-                            <v-text-field v-model="password" type="password" :rules="rules.required" outlined dense
-                                label="Password"></v-text-field>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-btn type="submit" color="#002147" dense dark>Sign in</v-btn>
-                                </v-col>
-                            </v-row>
-                        </center>
+                        <v-text-field v-model="username" :rules="rules.required" outlined dense
+                            label="Username"></v-text-field>
+                        <v-text-field v-model="password" type="password" :rules="rules.required" outlined dense
+                            label="Password"></v-text-field>
+                        <v-row>
+                            <v-col cols="12">
+                                <center>
+                                    <v-btn type="submit"  dark>Sign in</v-btn>
+                                </center>
+                            </v-col>
+                        </v-row>
                     </v-form>
                 </v-col>
             </v-row>
         </v-container>
     </v-app>
 </template>
+
   
 <script>
 
@@ -73,12 +72,7 @@ export default {
                 };
                 this.$store.dispatch("LOGIN", payload).then((response) => {
                     if (response.message === "Login Successfully!") {
-                        if (this.rememberMe) {
-                            localStorage.setItem("vb-token", response.token);
-                        }
-                        else {
-                            sessionStorage.setItem("vb-token", response.token);
-                        }
+                        sessionStorage.setItem("vb-token", response.token);
                         this.$router.push('TABSPAGE');
                     } else if (response.message === "not active") {
                         this.$swal.fire({
@@ -119,6 +113,7 @@ export default {
     transform: translate(-50%, -50%);
 }
 
+
 .login-btn {
     width: 100%;
 }
@@ -128,7 +123,7 @@ export default {
 }
 
 .parent {
-    background: ghostwhite;
+    background: url('../../assets/bg4.jpg') center center / cover;
 }
 </style>
   

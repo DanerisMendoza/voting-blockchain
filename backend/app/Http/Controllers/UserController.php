@@ -137,9 +137,27 @@ class UserController extends Controller
         return response()->json(['message' => 'Successfully Registered'], 200);
     }
 
-    public function UpdateLastVoteDate(){
+    public function UpdateLastVoteDate()
+    {
         $User = User::find(Auth::user()->id);
         $User->LastVoteDate = now();
         $User->save();
+    }
+
+    public function IsVoted()
+    {
+        $result = DB::table('elections')
+            ->where('isActive', true)
+            ->first();
+        $startVotingDate = \Carbon\Carbon::parse($result->start_voting_date);
+        $endVotingDate = \Carbon\Carbon::parse($result->end_voting_date);
+        $User = User::where('id',Auth::user()->id)->first();
+        $LastVoteDate = $User->LastVoteDate;
+        if ($LastVoteDate != null && $startVotingDate <= $LastVoteDate && $LastVoteDate <= $endVotingDate) {
+            return 'true';
+        } 
+        else{
+            return 'false';
+        }
     }
 }

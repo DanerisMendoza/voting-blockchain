@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-card class="pl-2 pt-2 pt-2">
-            <p>ELECTION STATUS: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
+            <p>Election Status: <strong style="text-transform: uppercase;">{{ ELECTION_STATUS }}</strong></p>
             <div v-if="ELECTION_STATUS == 'closed'">
                 <p>Filing Start: <strong>{{ formattedDate(ELECTION.start_filing_date) }}</strong></p>
                 <p>Filing End: <strong>{{ formattedDate(ELECTION.end_filing_date) }}</strong></p>
