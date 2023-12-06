@@ -52,5 +52,8 @@ export default {
             ],
         }
     },
+    mounted() {
+        this.$store.dispatch('GetUserDetails')
+    }
 }
 </script>

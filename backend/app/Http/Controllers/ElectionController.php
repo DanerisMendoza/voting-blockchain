@@ -41,18 +41,31 @@ class ElectionController extends Controller
 
     public function AddSchedule(Request $request)
     {
+        $resched = Election::select('isActive', 'id')
+            ->where('isActive', 1)->orderBy('id', 'desc')->first();
+        \Log::info($resched->id);
+
+        if ($resched) {
+            $reset = Election::where('id', $resched->id)
+                ->update(
+                    [
+                        'isActive' => 0
+                    ]
+                );
+        }
+
         $sched = new Election();
         $sched->isActive = 1;
         $sched->start_filing_date = $request->sf_start;
         $sched->end_filing_date = $request->sf_end;
         $sched->start_voting_date = $request->sv_start;
-        $sched->end_voting_date = $request->sv_start;
+        $sched->end_voting_date = $request->sv_end;
         $sched->save();
 
         return response()->json(
             [
                 'message' => 'Adding of Voting Schedules Success',
-                'icon' => 'success',
+                'icon' => 'success'
             ],
             200
         );

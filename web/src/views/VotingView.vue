@@ -89,6 +89,7 @@ export default {
             voteList: [],
             currentIndex: 0,
             selected_position: 1,
+            account: null
         }
     },
     methods: {
@@ -96,18 +97,60 @@ export default {
             return moment(data).format("MMMM D, YYYY - hh:mm A");
         },
         async main() {
+            await this.$store.dispatch('IsVoted')
             await this.$store.dispatch('GetElectionStatus')
             await this.$store.dispatch('GetActiveElection')
+            await this.$store.dispatch('UpdateLastVoteDate')
         },
-        submit() {
+        async getAllVotesFromContract() {
+            try {
+                const result = await this.contract.methods.getAllVotes().call();
+                return result;
+            } catch (error) {
+                throw new Error('Error calling getAllVotes:', error);
+            }
+        },
+        async submit() {
             if (this.voteList.length != this.GET_POSITIONS.length) {
                 Swal.fire({
                     title: "Do not leave anything blank.",
                     text: "Please complete the voting.",
                     icon: "warning"
-                })
+                });
             } else {
-                console.log(this.voteList)
+                this.initMetaMaskTransaction()
+            }
+        },
+        async initMetaMaskTransaction() {
+            const candidateIds = this.voteList.map(vote => vote.candidate_id);
+            const candidateName = this.voteList.map(vote => vote.candidate_name);
+            const positionIDs = this.voteList.map(vote => vote.position_id);
+            const positionName = this.voteList.map(vote => vote.position_name);
+            const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+            const currentDateTimestamp = Math.floor(new Date(currentDateInManila).getTime() / 1000);
+
+            if (window.ethereum) {
+                const web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    const accounts = await web3.eth.getAccounts();
+                    const contract = new web3.eth.Contract(VotingContract.abi, VotingContract.networks['5777'].address);
+
+                    for (let i = 0; i < candidateIds.length; i++) {
+                        await contract.methods.castVote(candidateIds[i], candidateName[i], this.GET_USER_DETAILS.id, this.GET_USER_DETAILS.name, positionIDs[i], positionName[i], currentDateTimestamp).send({
+                            from: accounts[0],
+                            gas: 3000000
+                        }).then((response) => {
+                            console.log(response)
+                        });
+                    }
+                    this.main();
+                } catch (error) {
+                    console.error('Error initializing MetaMask transaction:', error);
+                }
+            } else {
+                console.error('MetaMask not detected. Please install MetaMask.');
             }
         },
         clear() {
@@ -164,7 +207,8 @@ export default {
             'GET_V_CANDIDATES',
             'GET_POSITIONS',
             'GET_EL_STATUS',
-            'GET_ELECTION'
+            'GET_ELECTION',
+            'GET_USER_DETAILS'
         ])
     },
     mounted() {

@@ -2,11 +2,19 @@ import api from "@/api/index.js";
 import router from "@/router/index";
 
 export default {
-  state: {},
+  state: {
+    userdetails: {},
+  },
 
-  getters: {},
+  getters: {
+    GET_USER_DETAILS: (state) => state.userdetails,
+  },
 
-  mutations: {},
+  mutations: {
+    SET_USER_DETAILS: (state, data) => {
+      state.userdetails = data;
+    },
+  },
 
   actions: {
     Login({ commit }, payload) {
@@ -59,6 +67,33 @@ export default {
             } else {
               reject(new Error("Logout failed"));
             }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
+    UpdateLastVoteDate({ commit, payload }) {
+      return new Promise((resolve, reject) => {
+        api
+          .patch("api/UpdateLastVoteDate", payload)
+          .then((response) => {
+            resolve(response.data);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
+    GetUserDetails({ commit }) {
+      return new Promise((resolve, reject) => {
+        api
+          .get("api/GetUserDetails")
+          .then((response) => {
+            commit("SET_USER_DETAILS", response.data);
+            resolve(response.data);
           })
           .catch((error) => {
             reject(error);
