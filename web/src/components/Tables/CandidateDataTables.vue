@@ -1,5 +1,9 @@
 <template>
-    <v-data-table :items="GET_CANDIDATES" :headers="headers">
+    <v-data-table :items="GET_CANDIDATES" :headers="headers" :items-per-page="5">
+        <template v-slot:[`item.image`]="{ item }">
+            <v-img width="75px" :src="item.base64img">
+            </v-img>
+        </template>
         <template v-slot:[`item.action`]="{ item }">
             <v-btn color="warning" icon small dense>
                 <v-icon>mdi-eye</v-icon>
@@ -20,6 +24,7 @@ export default {
     data() {
         return {
             headers: [
+                { text: "Candidate", align: "start", sortable: false, value: "image" },
                 { text: "Candidate Name", align: "center", sortable: false, value: "candidate_name" },
                 { text: "Gender", align: "center", sortable: false, value: "gender" },
                 { text: "Position Title", align: "center", sortable: false, value: "position_name" },
