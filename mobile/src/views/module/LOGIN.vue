@@ -2,7 +2,7 @@
     <v-app class="parent">
         <v-container fluid class="login-card">
             <center>
-                <img src="../../assets/bg.png" width="300" />
+                <img src="../../assets/logo3.png" width="300" />
             </center>
             <v-row>
                 <v-col cols="12" lg="10">
@@ -72,12 +72,7 @@ export default {
                 };
                 this.$store.dispatch("LOGIN", payload).then((response) => {
                     if (response.message === "Login Successfully!") {
-                        if (this.rememberMe) {
-                            localStorage.setItem("vb-token", response.token);
-                        }
-                        else {
-                            sessionStorage.setItem("vb-token", response.token);
-                        }
+                        sessionStorage.setItem("vb-token", response.token);
                         this.$router.push('TABSPAGE');
                     } else if (response.message === "not active") {
                         this.$swal.fire({

@@ -28,12 +28,12 @@ class ElectionController extends Controller
         $endVotingDate = \Carbon\Carbon::parse($result->end_voting_date);
     
         if ($startVotingDate <= $now && $now <= $endVotingDate) {
-            return $electionStatus = 'ongoing';
+            return 'ongoing';
         } else {
             if ($now > $endVotingDate) {
-                return $electionStatus = 'finished';
+                return 'finished';
             } else {
-                return $electionStatus = 'closed';
+                return 'closed';
             }
         }
     }

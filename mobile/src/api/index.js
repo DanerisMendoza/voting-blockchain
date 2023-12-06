@@ -12,7 +12,7 @@ const instance = axios.create({
 instance.interceptors.request.use(function (request) {
     request.headers.common["Content-Type"] = 'application/json,text/html'
     request.headers.common['Accept'] = 'Application/json'
-    request.headers.common['Authorization']='Bearer ' + (sessionStorage.getItem("vb-token") == null ? localStorage.getItem('vb-token') : sessionStorage.getItem("vb-token"));
+    request.headers.common['Authorization']='Bearer ' + sessionStorage.getItem("vb-token");
     request.headers.common['Access-Control-Allow-Origin']='*';
     return request;
   }, function (error) {

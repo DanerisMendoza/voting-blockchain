@@ -60,7 +60,6 @@ export default {
     submitLogout() {
       this.$store.dispatch("Logout").then((response) => {
         if (response['message'] === "success") {
-          localStorage.removeItem("vb-token");
           sessionStorage.removeItem("vb-token");
           this.$router.push("/");
         }
