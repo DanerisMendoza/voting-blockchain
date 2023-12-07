@@ -5,7 +5,7 @@
         </v-col>
         <v-col cols="10">
             <v-container>
-                <v-card tile v-if="GET_EL_STATUS == 'ongoing'">
+                <v-card tile v-if="GET_EL_STATUS == 'ongoing' && GET_IS_VOTED == false">
                     <v-card-title>
                         Vote Now
                     </v-card-title>
@@ -48,7 +48,8 @@
                         </v-card-actions>
                     </v-card-text>
                 </v-card>
-                <v-card tile v-if="GET_EL_STATUS == 'closed' || 'finished'">
+                <!-- Closed -->
+                <v-card tile v-else>
                     <v-card-title>
                         Voting Schedules
                     </v-card-title>
@@ -208,7 +209,8 @@ export default {
             'GET_POSITIONS',
             'GET_EL_STATUS',
             'GET_ELECTION',
-            'GET_USER_DETAILS'
+            'GET_USER_DETAILS',
+            'GET_IS_VOTED',
         ])
     },
     mounted() {
