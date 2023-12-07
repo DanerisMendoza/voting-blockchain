@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('elections', function (Blueprint $table) {
             $table->id();
             $table->string("isActive");
-            $table->date("start_filing_date");
-            $table->date("end_filing_date");
-            $table->date("start_voting_date");
-            $table->date("end_voting_date");
+            $table->datetime("start_filing_date");
+            $table->datetime("end_filing_date");
+            $table->datetime("start_voting_date");
+            $table->datetime("end_voting_date");
             $table->timestamps();
         });
     }
