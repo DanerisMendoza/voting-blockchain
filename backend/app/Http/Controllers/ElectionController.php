@@ -43,7 +43,6 @@ class ElectionController extends Controller
     {
         $resched = Election::select('isActive', 'id')
             ->where('isActive', 1)->orderBy('id', 'desc')->first();
-        \Log::info($resched->id);
 
         if ($resched) {
             $reset = Election::where('id', $resched->id)
