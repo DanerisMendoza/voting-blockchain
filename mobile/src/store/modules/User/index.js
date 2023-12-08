@@ -6,6 +6,7 @@ export default {
     USERS: [],
     USER_DETAILS: { name: null },
     IS_VOTED: null,
+    TODAY: null,
   },
 
   getters: {
@@ -13,6 +14,7 @@ export default {
     USER_DETAILS: (state) => state.USER_DETAILS,
     USERS: (state) => state.USERS,
     IS_VOTED: (state) => state.IS_VOTED,
+    TODAY: (state) => state.TODAY,
   },
 
   mutations: {
@@ -20,9 +22,20 @@ export default {
     USER_DETAILS: (state, data) => { state.USER_DETAILS = data },
     USERS: (state, data) => { state.USERS = data },
     IS_VOTED: (state, data) => { state.IS_VOTED = data },
+    TODAY: (state, data) => { state.TODAY = data },
   },
 
   actions: {
+    GetToday({ commit }) {
+      return new Promise((resolve, reject) => {
+        api.get('api/GetToday').then((response) => {
+          commit('TODAY', response.data)
+          resolve(response.data)
+        }).catch((error) => {
+          reject(error)
+        });
+      })
+    },
     IsVoted({ commit }) {
       return new Promise((resolve, reject) => {
         api.get('api/IsVoted').then((response) => {

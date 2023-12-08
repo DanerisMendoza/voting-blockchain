@@ -160,4 +160,21 @@ class UserController extends Controller
             return 'false';
         }
     }
+
+    function GetToday() {
+        // Set the timezone to Asia/Manila
+        date_default_timezone_set('Asia/Manila');
+    
+        // Get the current date and time in the specified timezone
+        $currentDateInTimeZone = date('Y-m-d H:i:s');
+    
+        // Get the timestamp from the current date and time
+        $currentTimestamp = strtotime($currentDateInTimeZone);
+    
+        // Return an array with the date and timestamp
+        return [
+            'currentDateInTimeZone' => $currentDateInTimeZone,
+            'currentTimestamp' => $currentTimestamp,
+        ];
+    }
 }

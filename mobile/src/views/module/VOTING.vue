@@ -52,7 +52,7 @@
         </v-col>
       </v-row>
     </v-item-group>
-    <v-card v-if="IS_VOTED" class="pl-2 pt-2 pt-2" >
+    <v-card v-if="IS_VOTED" class="pl-2 pt-2 pt-2">
       <p>User Status: <strong style="text-transform: uppercase;">Already Voted</strong></p>
     </v-card>
   </v-app>
@@ -67,7 +67,7 @@ import moment from 'moment';
 
 export default {
   computed: {
-    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "ELECTION_STATUS","IS_VOTED"]),
+    ...mapGetters(["POSITIONS", "CANDIDATES", "USER_DETAILS", "SETTINGS", "ELECTION", "ELECTION_STATUS", "IS_VOTED", "TODAY"]),
   },
   watch: {
     selected_position: {
@@ -115,10 +115,11 @@ export default {
             throw new Error('Invalid private key format');
           }
           const account = this.web3.eth.accounts.privateKeyToAccount(this.SETTINGS.private_key);
-          const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-          const currentDateTimestamp = Math.floor(new Date(currentDateInManila).getTime() / 1000);
+          // const currentDateInManila = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+          // const currentDateTimestamp = Math.floor(new Date(currentDateInManila).getTime() / 1000);
+          await this.$store.dispatch('GetToday')
           for (let i = 0; i < candidateIds.length; i++) {
-            await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i], currentDateTimestamp).send({
+            await this.contract.methods.castVote(candidateIds[i], candidateName[i], this.USER_DETAILS.id, this.USER_DETAILS.name, positionIDs[i], positionName[i], this.TODAY.currentTimestamp).send({
               from: account.address,
               gas: 2000000,
             }).then((response) => {
