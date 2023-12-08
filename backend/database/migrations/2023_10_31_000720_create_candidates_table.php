@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('position_id');
             $table->integer('partylist_id');
-            $table->date('accepted_date');
+            $table->datetime('accepted_date');
             $table->timestamps();
         });
     }
