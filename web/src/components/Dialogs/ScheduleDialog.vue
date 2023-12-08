@@ -19,11 +19,18 @@
                             <v-col cols="6">
                                 <v-text-field v-model="GET_VS_START" outlined filled dense
                                     label="Starting Date"></v-text-field>
-                                <v-text-field v-model="GET_VS_END" outlined filled dense
-                                    label="Starting Date"></v-text-field>
+                                <v-text-field v-model="GET_VS_END" outlined filled dense label="End Date"></v-text-field>
+                                <v-time-picker v-if="selectedDates.length == 1" v-model="GET_VS_START_TIME"
+                                    @input="checkstart" format="ampm" full-width use-seconds
+                                    label="Starting Time"></v-time-picker>
+                                <v-time-picker v-else-if="selectedDates.length > 1 && selectedTime != null"
+                                    v-model="GET_VS_END_TIME" format="ampm" full-width use-seconds label="Ending Time"
+                                    @input="checkend"></v-time-picker>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn tile block small color="primary" @click="next">Next</v-btn>
+                                    <v-btn tile block small color="primary"
+                                        v-if="selectedDates.length == 2 && selectedTime != null && selectedEndTime != null"
+                                        @click="next">Next</v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-col>
@@ -40,11 +47,17 @@
                             <v-col cols="6">
                                 <v-text-field v-model="GET_FS_START" outlined filled dense
                                     label="Starting Date"></v-text-field>
-                                <v-text-field v-model="GET_FS_END" outlined filled dense
-                                    label="Starting Date"></v-text-field>
+                                <v-text-field v-model="GET_FS_END" outlined filled dense label="End Date"></v-text-field>
+                                <v-time-picker v-if="filingDate.length == 1" v-model="GET_FS_START_TIME"
+                                    @input="filingcheckstart" format="ampm" full-width use-seconds
+                                    label="Starting Time"></v-time-picker>
+                                <v-time-picker v-else-if="filingDate.length > 1 && filingTime != null"
+                                    v-model="GET_FS_END_TIME" format="ampm" full-width use-seconds label="Ending Time"
+                                    @input="filingcheckend"></v-time-picker>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn tile block small color="primary" @click="setSchedule">Set</v-btn>
+                                    <v-btn tile block small color="primary" @click="setSchedule"
+                                        v-if="filingDate.length == 2 && filingTime != null && filingEndTime != null">Set</v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
                             </v-col>
@@ -62,25 +75,50 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            dialogWidth: '60%',
+            dialogWidth: '80%',
             filingDate: [],
             selectedDates: [],
             minDate: '2023-01-01',
             startdate: null,
             enddate: null,
-            wvalue: 1
+            selectedTime: null,
+            selectedEndTime: null,
+            filingTime: null,
+            filingEndTime: null,
+            wvalue: 1,
         }
     },
     methods: {
+        filingcheckend(filingEndTime) {
+            this.filingEndTime = filingEndTime;
+            this.$store.commit('SET_FS_END_TIME', filingEndTime);
+            return filingEndTime;
+        },
+        filingcheckstart(filingTime) {
+            this.filingTime = filingTime;
+            this.$store.commit('SET_FS_START_TIME', filingTime);
+            return filingTime;
+        },
+        checkend(selectedEndTime) {
+            this.selectedEndTime = selectedEndTime;
+            this.$store.commit('SET_VS_END_TIME', selectedEndTime);
+            return selectedEndTime;
+        },
+        checkstart(selectedTime) {
+            this.selectedTime = selectedTime;
+            this.$store.commit('SET_VS_START_TIME', selectedTime);
+            return selectedTime;
+        },
         setSchedule() {
+
             var payload = {
-                sf_start: this.GET_FS_START,
-                sf_end: this.GET_FS_END,
-                sv_start: this.GET_VS_START,
-                sv_end: this.GET_VS_END
+                sf_start: this.GET_FS_START + ' ' + this.GET_FS_START_TIME,
+                sf_end: this.GET_FS_END + ' ' + this.GET_FS_END_TIME,
+                sv_start: this.GET_VS_START + ' ' + this.GET_VS_START_TIME,
+                sv_end: this.GET_VS_END + ' ' + this.GET_VS_END_TIME,
             }
+            console.log(payload);
             this.$store.dispatch('AddSchedule', payload).then((response) => {
-                console.log(response)
                 if (response.status == 200) {
                     Swal.fire({
                         text: response.data.message,
@@ -94,7 +132,14 @@ export default {
             this.wvalue = 1;
         },
         next() {
-            this.wvalue = 2;
+            if (this.selectedDates.length < 2 || this.selectedTime == null || this.selectedEndTime == null) {
+                Swal.fire({
+                    text: "Please Complete the Schedule Details First.",
+                    icon: "warning"
+                })
+            } else {
+                this.wvalue = 2;
+            }
         },
         fileSchedule(filingDate) {
             if (filingDate.length > 2) {
@@ -110,10 +155,20 @@ export default {
             this.$store.commit('SET_VS_END', null)
             this.$store.commit('SET_FS_START', null)
             this.$store.commit('SET_FS_END', null)
+            this.$store.commit('SET_VS_START_TIME', null)
+            this.$store.commit('SET_VS_END_TIME', null)
+            this.$store.commit('SET_FS_START_TIME', null)
+            this.$store.commit('SET_FS_END_TIME', null)
+            this.selectedTime = null
+            this.selectedEndTime = null
+            this.filingTime = null
+            this.filingEndTime = null
+            this.wvalue = 1;
         },
         handleDateChange(selectedDates) {
             if (selectedDates.length > 2) {
-                selectedDates.shift(); // Remove the first date if more than 2 are selected
+                selectedDates.shift();
+                this.selectedTime = null;
             }
             this.selectedDates = selectedDates;
             this.$store.commit('SET_VS_START', this.selectedDates[0])
@@ -126,15 +181,52 @@ export default {
             'GET_VS_START',
             'GET_VS_END',
             'GET_FS_START',
-            'GET_FS_END'
-        ])
+            'GET_FS_END',
+            'GET_FS_START_TIME',
+            'GET_FS_END_TIME',
+            'GET_VS_START_TIME',
+            'GET_VS_END_TIME'
+        ]),
+        GET_VS_START_TIME: {
+            get() {
+                return this.$store.getters.GET_VS_START_TIME;
+            },
+            set(value) {
+                this.$store.commit('SET_VS_START_TIME', value);
+            },
+        },
+        GET_VS_END_TIME: {
+            get() {
+                return this.$store.getters.GET_VS_END_TIME;
+            },
+            set(value) {
+                this.$store.commit('SET_VS_END_TIME', value);
+            },
+        },
+        GET_FS_START_TIME: {
+            get() {
+                return this.$store.getters.GET_FS_START_TIME;
+            },
+            set(value) {
+                this.$store.commit('SET_FS_START_TIME', value);
+            },
+        },
+        GET_FS_END_TIME: {
+            get() {
+                return this.$store.getters.GET_FS_END_TIME;
+            },
+            set(value) {
+                this.$store.commit('SET_FS_END_TIME', value);
+            },
+        },
+
     },
     watch: {
         '$vuetify.breakpoint.width'(newWidth) {
             if (newWidth < 600) {
                 this.dialogWidth = '90%';
             } else {
-                this.dialogWidth = '60%';
+                this.dialogWidth = '80%';
             }
         },
     }

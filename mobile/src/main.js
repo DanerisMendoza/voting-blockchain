@@ -6,6 +6,7 @@ import router from './router';
 import store from './store'
 import Swal from 'sweetalert2';
 import VueApexCharts from 'vue-apexcharts'
+import './registerServiceWorker'
 
 Vue.component('apexchart', VueApexCharts)
 Vue.use(VueApexCharts)
