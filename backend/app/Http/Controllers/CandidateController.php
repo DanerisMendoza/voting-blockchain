@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidate;
+use App\Models\Election;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +12,13 @@ class CandidateController extends Controller
 {
     public function GetCandidates(Request $request)
     {
+        $activeElection = (new Election())->getActiveElection();
         $userDetail = DB::table('candidates')
             ->join('users', 'users.id', 'candidates.user_id')
             ->join('positions', 'positions.id', 'candidates.position_id')
             ->join('partylists', 'partylists.id', 'candidates.partylist_id')
             ->where('positions.id', $request['selectedPositionID'])
+            ->whereBetween('candidates.accepted_date', [$activeElection->start_voting_date, $activeElection->end_voting_date])
             ->select(DB::raw("CONCAT_WS(' ',users.first_name, users.middle_name, users.last_name, users.suffix) as candidate_name"), 'positions.name as position_name', 'candidates.id as candidate_id', 'positions.id as position_id', 'partylists.name as party_list', 'users.profile_pic_path')
             ->get()
             ->each(function ($q) {

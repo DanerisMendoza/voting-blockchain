@@ -12,4 +12,10 @@ class Election extends Model
     protected $fillable = [
         'isActive'
     ];
+
+    public function getActiveElection()
+    {
+        $result = $this->where('isActive', true)->first();
+        return $result;
+    }
 }
