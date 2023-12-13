@@ -21,6 +21,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/IsVoted', [UserController::class, 'IsVoted']);
     Route::get('/GetToday', [UserController::class, 'GetToday']);
     Route::get('/GetAllVoters', [UserController::class, 'GetAllVoters']);
+    Route::patch('/ChangePassword', [UserController::class, 'ChangePassword']);
     //CANDIDATE API
     Route::get('/GetCandidates', [CandidateController::class, 'GetCandidates']);
     Route::get('/GetAllCandidates', [CandidateController::class, 'GetAllCandidates']);

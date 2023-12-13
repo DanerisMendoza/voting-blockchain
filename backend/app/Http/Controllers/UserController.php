@@ -198,4 +198,21 @@ class UserController extends Controller
             });
         return $userDetail;
     }
+
+    public function ChangePassword(Request $request)
+    {
+        \Log::info($request);
+        $id = Auth::user()->id;
+
+        $pass = Hash::make($request->password);
+        \Log::info($pass);
+        $reset = User::where('id', $id)
+            ->update(
+                [
+                    'password' => $pass
+                ]
+            );
+
+        return response()->json(['message' => 'Password changed successfully', 'icon' => 'success'], 200);
+    }
 }
