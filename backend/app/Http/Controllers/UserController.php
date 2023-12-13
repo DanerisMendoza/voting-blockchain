@@ -201,11 +201,8 @@ class UserController extends Controller
 
     public function ChangePassword(Request $request)
     {
-        \Log::info($request);
         $id = Auth::user()->id;
-
         $pass = Hash::make($request->password);
-        \Log::info($pass);
         $reset = User::where('id', $id)
             ->update(
                 [
