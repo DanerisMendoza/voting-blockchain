@@ -151,30 +151,51 @@ class UserController extends Controller
             ->first();
         $startVotingDate = \Carbon\Carbon::parse($result->start_voting_date);
         $endVotingDate = \Carbon\Carbon::parse($result->end_voting_date);
-        $User = User::where('id',Auth::user()->id)->first();
+        $User = User::where('id', Auth::user()->id)->first();
         $LastVoteDate = $User->LastVoteDate;
         if ($LastVoteDate != null && $startVotingDate <= $LastVoteDate && $LastVoteDate <= $endVotingDate) {
             return 'true';
-        } 
-        else{
+        } else {
             return 'false';
         }
     }
 
-    function GetToday() {
+    function GetToday()
+    {
         // Set the timezone to Asia/Manila
         date_default_timezone_set('Asia/Manila');
-    
+
         // Get the current date and time in the specified timezone
         $currentDateInTimeZone = date('Y-m-d H:i:s');
-    
+
         // Get the timestamp from the current date and time
         $currentTimestamp = strtotime($currentDateInTimeZone);
-    
+
         // Return an array with the date and timestamp
         return [
             'currentDateInTimeZone' => $currentDateInTimeZone,
             'currentTimestamp' => $currentTimestamp,
         ];
+    }
+
+    public function GetAllVoters()
+    {
+        $userDetail = DB::table('users')
+            ->select(DB::raw("CONCAT_WS(' ', users.first_name, users.middle_name, users.last_name, users.suffix) as name"), 'users.profile_pic_path', 'users.gender')
+            ->where('user_role', 2)
+            ->get()
+            ->each(function ($q) {
+                if ($q->profile_pic_path != null) {
+                    $image_type = substr($q->profile_pic_path, -3);
+                    $image_format = '';
+                    if ($image_type == 'png' || $image_type == 'jpg') {
+                        $image_format = $image_type;
+                    }
+                    $base64str = '';
+                    $base64str = base64_encode(file_get_contents(public_path($q->profile_pic_path)));
+                    $q->base64img = 'data:image/' . $image_format . ';base64,' . $base64str;
+                }
+            });
+        return $userDetail;
     }
 }

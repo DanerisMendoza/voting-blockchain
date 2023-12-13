@@ -20,6 +20,7 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('/UpdateLastVoteDate', [UserController::class, 'UpdateLastVoteDate']);
     Route::get('/IsVoted', [UserController::class, 'IsVoted']);
     Route::get('/GetToday', [UserController::class, 'GetToday']);
+    Route::get('/GetAllVoters', [UserController::class, 'GetAllVoters']);
     //CANDIDATE API
     Route::get('/GetCandidates', [CandidateController::class, 'GetCandidates']);
     Route::get('/GetAllCandidates', [CandidateController::class, 'GetAllCandidates']);

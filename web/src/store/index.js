@@ -7,6 +7,8 @@ import partyliststore from "./PartyList/partyliststore";
 import candidatestore from "./Candidates/candidatestore";
 import dashboardstore from "./AdminDashboard/dashboardstore";
 import electionstore from "./Election/electionstore";
+import voterstore from "./Voters/voterstore";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -19,5 +21,6 @@ export default new Vuex.Store({
     candidatestore,
     dashboardstore,
     electionstore,
+    voterstore,
   },
 });
