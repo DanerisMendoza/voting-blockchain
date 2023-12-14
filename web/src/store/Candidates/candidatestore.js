@@ -103,5 +103,20 @@ export default {
           });
       });
     },
+
+    ClearCandidates({ commit }) {
+      return new Promise((resolve, reject) => {
+        api
+          .delete("api/ClearCandidates")
+          .then((response) => {
+            if (response.status == 200) {
+              resolve(response.data);
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
   },
 };

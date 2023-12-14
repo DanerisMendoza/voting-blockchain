@@ -110,4 +110,22 @@ class CandidateController extends Controller
 
         return response()->json(['message' => 'Applications canceled successfully', 'icon' => 'success'], 200);
     }
+
+    public function ClearCandidates()
+    {
+        try {
+            Candidate::truncate();
+
+            return response()->json([
+                'message' => 'Candidates cleared successfully',
+                'icon' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error clearing candidates',
+                'icon' => 'error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

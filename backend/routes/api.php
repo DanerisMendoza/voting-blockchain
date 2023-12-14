@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/AddAsCandidate', [CandidateController::class, 'AddAsCandidate']);
     Route::get('/GetCandidateById', [CandidateController::class, 'GetCandidateById']);
     Route::delete('/CancelApplication', [CandidateController::class, 'CancelApplication']);
+    Route::delete('/ClearCandidates', [CandidateController::class, 'ClearCandidates']);
     //POSISTION API
     Route::get('/GetPositions', [PositionController::class, 'GetPositions']);
     //SETTINGS API
