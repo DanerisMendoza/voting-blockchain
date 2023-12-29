@@ -5,7 +5,7 @@
         </v-col>
         <v-col cols="10">
             <v-container>
-                <v-card tile>
+                <v-card tile v-if="GET_EL_STATUS == 'ongoing'">
                     <v-card-title>
                         Vote Now
                     </v-card-title>
@@ -48,6 +48,29 @@
                         </v-card-actions>
                     </v-card-text>
                 </v-card>
+                <v-card tile v-if="GET_EL_STATUS == 'closed' || 'finished'">
+                    <v-card-title>
+                        Voting Schedules
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-subtitle></v-card-subtitle>
+                    <v-card-text class="text-center">
+                        <v-col cols="12">
+                            <label>Filing Start: <strong>{{ formattedDate(GET_ELECTION.start_filing_date)
+                            }}</strong></label>
+                        </v-col>
+                        <v-col cols="12">
+                            <label>Filing End: <strong>{{ formattedDate(GET_ELECTION.end_filing_date) }}</strong></label>
+                        </v-col>
+                        <v-col cols="12">
+                            <label>Election Start: <strong>{{ formattedDate(GET_ELECTION.start_voting_date)
+                            }}</strong></label>
+                        </v-col>
+                        <v-col cols="12">
+                            <label>Election End: <strong>{{ formattedDate(GET_ELECTION.end_voting_date) }}</strong></label>
+                        </v-col>
+                    </v-card-text>
+                </v-card>
             </v-container>
         </v-col>
     </v-row>
@@ -59,6 +82,7 @@ import VotingContract from '../../../blockchain/build/contracts/VotingSystem.jso
 import VotersNav from '@/components/Navbars/VotersNav.vue';
 import Swal from 'sweetalert2';
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 export default {
     data() {
         return {
@@ -68,6 +92,13 @@ export default {
         }
     },
     methods: {
+        formattedDate(data) {
+            return moment(data).format("MMMM D, YYYY - hh:mm A");
+        },
+        async main() {
+            await this.$store.dispatch('GetElectionStatus')
+            await this.$store.dispatch('GetActiveElection')
+        },
         submit() {
             if (this.voteList.length != this.GET_POSITIONS.length) {
                 Swal.fire({
@@ -132,9 +163,12 @@ export default {
         ...mapGetters([
             'GET_V_CANDIDATES',
             'GET_POSITIONS',
+            'GET_EL_STATUS',
+            'GET_ELECTION'
         ])
     },
     mounted() {
+        this.main();
         this.fetchPosition();
         this.$store.dispatch('GetPositions').then(() => {
             this.selected_position = this.GET_POSITIONS[this.currentIndex].id
